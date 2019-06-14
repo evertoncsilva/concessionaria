@@ -1,7 +1,5 @@
 <?php
-$pageTitle          = "Componentes";
-$activePage         = 'componentes';
-$templateCss        = 'componentes';
+
     // INSERIR CONTEÚDO AQUI
 ?>
 <?php include __DIR__.'/../partials/header.php' ?>

@@ -4,10 +4,23 @@ require_once __DIR__.'/../listModels/componentes.model.php';
 
 class ComponenteController
 {
-    private static $templateFolder = "componentes";
-    private static $baseTemplate = "componentesIndex.php";
+    private $templateFolder  = "componentes";
+    private $baseTemplate    = "componentesIndex.php";
+    private $modelName       = "ComponentesModel";
+
+    // Variáveis abaixo serão acessadas pelo render
+    public  $pageTitle          = "Componentes";
+    public  $activePage         = 'componentes';
+    public  $templateCss        = 'componentes';
+
+    public function __construct() {
+        //construct
+    }
+
+
+
     //GET Routes
-    public static function get($request) 
+    public function get($request) 
     {
         switch($request) 
         {
@@ -26,7 +39,7 @@ class ComponenteController
         }
     }
 
-    public static function post($request)
+    public function post($request)
     {
         switch($request['action']) 
         {
@@ -39,96 +52,97 @@ class ComponenteController
         }
     }
 
-    public static function renderIndex() {
-        include TEMPLATE_FOLDER.self::$templateFolder."/".self::$baseTemplate;
+    public function renderIndex() {
+        include TEMPLATE_FOLDER.$templateFolder."/".$baseTemplate;
     }
 
     //GET ACTIONS
 
-    public static function getById($id) 
+    public function getById($id) 
     {
-        header('Content-Type: application/json');
-        $componente = new ComponentesModel();
-        $data = $componente->getById($id);
+        $model = self::getModel();
+        $data = $model->getById($id);
 
         if($data)
         {
-            $return['sucess'] = true;
-            $return['resultCount'] = 1;
-            $return['data'] = array($data);
-            echo json_encode($return);
-            die;
+            $result['sucess'] = true;
+            $result['resultCount'] = 1;
+            $result['data'] = array($data);
+            self::send($result);
         } else {
-            $return['sucess']        = false;
-            $return['resultCount']   = 0;
-            $return['error_code']    = 1;
-            $return['error_message'] = 'Nenhum resultado encontrado';
-            $return['data'] = array();
-            echo json_encode($return);
-            die;
+            $result['sucess']        = false;
+            $result['resultCount']   = 0;
+            $result['error_code']    = 1;
+            $result['error_message'] = 'Nenhum resultado encontrado';
+            $result['data'] = array();
+            self::send($result);
         }
     }
 
-    function getAll() {
-        header('Content-Type: application/json');
-        $componente = new ComponentesModel();
-        $data = $componente->getAll();
+    public function getAll() {
+        $model = self::getModel();
+        $data = $model->getAll();
 
         if($data)
         {
-            $return['sucess'] = true;
-            $return['resultCount'] = sizeof($data);
-            $return['data'] = $data;
-            echo json_encode($return);
-            die;
+            $result['sucess'] = true;
+            $result['resultCount'] = sizeof($data);
+            $result['data'] = $data;
+            self::send($result);
         } else {
-            $return['sucess']        = false;
-            $return['resultCount']   = 0;
-            $return['error_code']    = 1;
-            $return['error_message'] = 'Nenhum resultado encontrado';
-            $return['data'] = array();
-            echo json_encode($return);
-            die;
+            $result['sucess']        = false;
+            $result['resultCount']   = 0;
+            $result['error_code']    = 1;
+            $result['error_message'] = 'Nenhum resultado encontrado';
+            $result['data'] = array();
+            self::send($result);
         }
     }
 
-    public static function getPaginated($request)
+    public function getPaginated($request)
     {
-        header('Content-Type: application/json');
         $start = (isset($request['start']) && $request['start'] > 0)    ?  $request['start'] : 1;
         $end   = (isset($request['end']) && $request['end'] > $start)   ? $request['end'] : ($start + MAX_PAGE_SIZE);
-        $componente = new ComponentesModel();
+        $model = self::getModel();
 
-        $data       = $componente->getRangeById($start, $end);
-        $totalCount = $componente->getTotalAmount();
+        $data       = $model->getRangeById($start, $end);
+        $totalCount = $model->getTotalAmount();
         if($data)
         {
-            $return['sucess'] = true;
-            $return['resultCount'] = sizeof($data);
-            $return['countAll'] = $totalCount;
-            $return['data'] = $data;
-            echo json_encode($return);
-            die;
+            $result['sucess'] = true;
+            $result['resultCount'] = sizeof($data);
+            $result['countAll'] = $totalCount;
+            $result['data'] = $data;
+            self::send($result);
         } else {
-            $return['sucess']        = false;
-            $return['resultCount']   = 0;
-            $return['error_code']    = 1;
-            $return['error_message'] = 'Nenhum resultado encontrado';
-            $return['data'] = array();
-            echo json_encode($return);
-            die;
+            $result['sucess']        = false;
+            $result['resultCount']   = 0;
+            $result['error_code']    = 1;
+            $result['error_message'] = 'Nenhum resultado encontrado';
+            $result['data'] = array();
+            self::send($result);
         }
 
     }
 
     //POST
 
-    public static function create($request)
+    public function create($request)
     {
-        header('Content-Type: application/json');
-        $componente = new ComponentesModel();
-        $componente->insertNew($request);
+        $model = $this->getModel();
+        $model->insertNew($request);
         die;
+    }
+
+    // Util
+    public function send($data) {
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        die;
+    }
+
+    private function getModel() {
+        return new $this->$modelName();
     }
 
 }
