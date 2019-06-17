@@ -1,1 +1,5 @@
-<?php header('Location: componentes.php') ?>
+<?php 
+
+header('Location: componentes.php')
+
+?>
