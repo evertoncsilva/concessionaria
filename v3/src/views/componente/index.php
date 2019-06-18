@@ -1,15 +1,14 @@
 <?php
-
     // INSERIR CONTEÚDO AQUI
 ?>
 <?php include __DIR__.'/../partials/header.php' ?>
 <?php include __DIR__.'/../partials/navbar.php' ?>
 
-
-<div class="container table_container col-lg-10 col-md-12">
+<div id="table-container" class="container table_container col-lg-10 col-md-12">
   <div class="panel panel-primary">
     <div class="panel-heading">
       <h3 class="panel-title">Componentes</h3>
+      
       <div class="pull-right">
         <!-- <span class="clickable filter" data-toggle="tooltip" title="Toggle table filter" data-container="body">
 								<i class="glyphicon glyphicon-filter"></i>
@@ -35,23 +34,19 @@
     </table>
     <div id="spinner" class="spinner"></div>
   </div>
-  <div id="tablePaginator" class="pull-right">
-    <nav aria-label="...">
-      <ul class="pagination">
-        <li id="paginator-previous" class="page-item" onclick="previousPage()">
-          <a class="page-link" href="#" tabindex="-1">Anterior</a>
-        </li>
-        <li id="paginator-next" class="page-item" onclick="nextPage()">
-          <a class="page-link" href="#">Próximo</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
+    <div id="tablePaginator" class="pull-right">
+      <nav aria-label="...">
+        <ul class="pagination">
+          <li id="paginator-previous" class="page-item" onclick="onPreviousPage()">
+            <a class="page-link" href="#" tabindex="-1">Anterior</a>
+          </li>
+          <li id="paginator-next" class="page-item" onclick="onNextPage()">
+            <a class="page-link" href="#">Próximo</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
 
-</div>
-
-
-</div>
 </div>
 
 

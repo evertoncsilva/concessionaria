@@ -6,16 +6,18 @@ var componentesCount = 0;
 var totalPagesCount = 0;
 var nextButtom = $("#paginator-next");
 var previousButtom = $("#paginator-previous");
+var _tableContainer = $("#table-container");
 const targetTable = $('#tableContent');
 
 window.addEventListener("load", initialize, true);
+
+
 function initialize() {
     setActiveLinks(activePage);
     //$('#tableContent').append(generateTableItem(item));
     //$('#spinner').remove();
     getComponentes();
 }
-
 function getComponentes() {
     $.ajax({
         type: "GET",
@@ -41,7 +43,6 @@ function getComponentes() {
 
     });
 }
-
 function renderTable(itens) {
     targetTable.empty();
 
@@ -49,7 +50,6 @@ function renderTable(itens) {
         targetTable.append(generateTableItem(item));
     });
 }
-
 function renderPage(pageNumber) {
     pageNumber = (pageNumber >= 0) ? pageNumber : 0;
     let startItem = pageNumber * pageSize;
@@ -59,13 +59,11 @@ function renderPage(pageNumber) {
     activePage = pageNumber;
     updatePageButtoms();
 }
-
-function nextPage()
+function onNextPage()
 {
     renderPage(activePage + 1, );
 }
-
-function previousPage()
+function onPreviousPage()
 {
     if(activePage > 0)
     {
@@ -82,7 +80,6 @@ function updatePageButtoms()
     if(activePage < totalPagesCount) {nextButtom.toggleClass('disabled', false);}
     else {nextButtom.toggleClass('disabled', true);}
 }
-
 function generateTableItem(item) {
     return `<tr>
     <td class="td-select"><input type="checkbox"></td>
@@ -90,12 +87,14 @@ function generateTableItem(item) {
     <td>${item.nome}</td>
     <td>${item.descricao}</td>
     <td>
-      <span class="glyphicon glyphicon-trash table-option pull-right" aria-hidden="true"></span>
-      <span class="glyphicon glyphicon-pencil table-option pull-right " aria-hidden="true"></span>
+      <span class="glyphicon glyphicon-trash table-option pull-right" aria-hidden="true" onclick="onEditComponente()"></span>
+      <span class="glyphicon glyphicon-pencil table-option pull-right " aria-hidden="true" onclick="ondeDeleteComonente()"></span>
     </td>
     </tr>`;
 }
+function onEditComponente() {
+    _tableContainer.hide();
+}
+function onDeleteComponente() {
 
-function generatePagination(pages) {
-    
 }
