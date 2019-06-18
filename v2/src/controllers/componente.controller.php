@@ -6,7 +6,7 @@ class ComponenteController
 {
     private $templateFolder  = "componentes";
     private $baseTemplate    = "componentesIndex.php";
-    private $modelName       = "ComponentesModel";
+    private $modelName       = "Componente";
 
     // Variáveis abaixo serão acessadas pelo render
     public  $pageTitle          = "Componentes";
@@ -101,6 +101,7 @@ class ComponenteController
 
     public function getPaginated($request)
     {
+        $req = $request;
         $start = (isset($request['start']) && $request['start'] > 0)    ?  $request['start'] : 1;
         $end   = (isset($request['end']) && $request['end'] > $start)   ? $request['end'] : ($start + MAX_PAGE_SIZE);
         $model = self::getModel();

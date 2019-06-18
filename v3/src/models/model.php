@@ -4,6 +4,6 @@
             
         }
 
-        public static abstract function create($params);
+        public static abstract function create(array $params);
     }
 ?>

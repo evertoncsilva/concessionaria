@@ -10,9 +10,10 @@ class Componente extends Model {
     private function __construct() {
         parent::__construct();
     }
+
     public static function create(array $data) {
 
-        $instance = new ComponenteModel();
+        $instance = new Componente();
         foreach ($data as $key => $value) {
             if (property_exists($instance, $key))
             {
@@ -25,7 +26,7 @@ class Componente extends Model {
 
     public static function createEmpty() 
     {
-        $instance = new ComponenteModel();
+        $instance = new Componente();
         return $instance;
     }
 }

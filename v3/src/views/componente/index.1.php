@@ -9,7 +9,7 @@
 <div class="container table_container col-lg-10 col-md-12">
   <div class="panel panel-primary">
     <div class="panel-heading">
-      <h3 class="panel-title"><?php echo $pageTitle ?></h3>
+      <h3 class="panel-title"><?= $pageTitle ?></h3>
       <div class="pull-right">
         <!-- <span class="clickable filter" data-toggle="tooltip" title="Toggle table filter" data-container="body">
 								<i class="glyphicon glyphicon-filter"></i>
@@ -61,4 +61,4 @@
 
 
 <?php include __DIR__.'/../partials/sidebar-right.php'?>
-<?php include __DIR__.'/../partials/footer.php' ?>
+<?php include __DIR__.'/../partials/footer.php'?>

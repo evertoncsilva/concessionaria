@@ -4,11 +4,7 @@
 
     class ComponentesDTO extends DTO
     {
-        public $modelName = 'Componente';
-        public $tableName = "componente";
-        public $properties = array();
-        public $primaryKey = "id";
-
+       
         /**
          * Model constructor
          *
@@ -16,6 +12,9 @@
          */
         public function __construct()
         {
+            $modelName = 'Componente';
+            $tableName = "componente";
+    
             parent::__construct($tableName, $modelName);
         }
     }
