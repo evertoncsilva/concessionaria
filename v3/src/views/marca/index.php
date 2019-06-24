@@ -8,7 +8,7 @@
 <div id="main-container" class="container table_container col-lg-10 col-md-12">
   <div id="table-panel" class="card">
     <div class="card-header">
-      <h3 class="panel-title">Componentes <span id="table-itemcount"class="float-right"></span>
+      <h3 class="panel-title">Marcas <span id="table-itemcount"class="float-right"></span>
       </h3>
     </div>
     <table class="table table-hover" id="data-table">

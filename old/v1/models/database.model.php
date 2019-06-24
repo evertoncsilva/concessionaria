@@ -1,6 +1,6 @@
 <?php
 
-class DatabaseConnector
+class Database
 {
     public static $hostname     = "127.0.0.1";
     public static $username     = "root";
@@ -15,15 +15,16 @@ class DatabaseConnector
     /**
      * Conexão com o banco
      *
+     * @var [mysqli]
      */
     public $conn = null;
     public $dsn = null;
 
     public function __construct()
     {
-        $this->dsn =    "mysql:host=".static::$hostname.
-                        ";dbname=".static::$dbname.
-                        ";charset=".static::$charset;
+        $this->dsn =  "mysql:host=".static::$hostname.
+                ";dbname=".static::$dbname
+                .";charset=".static::$charset;
         $this->connect();
     }
 
@@ -33,7 +34,7 @@ class DatabaseConnector
         try {
             $this->conn = new PDO($this->dsn, static::$username, static::$password, static::$dbOptions);
         } catch (Exception $err) {
-            throw new Exception("Não foi possível conectar ao banco de dados", 1);
+            echo $err;
         }
        
     }

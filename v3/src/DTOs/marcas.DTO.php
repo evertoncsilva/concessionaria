@@ -1,8 +1,8 @@
 <?php
     require_once 'DTO.php';
-    require_once __DIR__.'/../models/componente.model.php';
+    require_once __DIR__.'/../models/marca.model.php';
 
-    class ComponentesDTO extends DTO
+    class MarcasDTO extends DTO
     {
        
         /**
@@ -12,8 +12,8 @@
          */
         public function __construct()
         {
-            $modelName = 'Componente';
-            $tableName = "componente";
+            $modelName = 'Marca';
+            $tableName = "marca";
     
             parent::__construct($tableName, $modelName);
         }

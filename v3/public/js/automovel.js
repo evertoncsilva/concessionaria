@@ -1,8 +1,8 @@
-let activePageName      = 'componentes';
+let activePageName      = 'automoveis';
+let allAutomoveis       = null;
 let pageSize            = 10;
 let activePageNumber    = 0;
-let allComponentes      = null;
-let componentesCount    = 0;
+let automoveisCount     = 0;
 let totalPagesCount     = 0;
 let lastPageNumber      = 0;
 let lastAlertId         = 0;
@@ -15,29 +15,29 @@ const tablePanel        = $('#table-panel');
 const targetTable       = $('#tableContent');
 const checkboxAll       = $('#checkbox-select-all');
 
-window.addEventListener("load", initialize, true);
+window.addEventListener("load", _initialize, true);
 
 
-function initialize() 
+function _initialize() 
 {
     setActiveLinks(activePageName);
-    ajax_GetComponentes();
+    ajax_GetAutomoveis();
 }
-function ajax_GetComponentes(page) 
+function ajax_GetAutomoveis(page) 
 {
     $.ajax({
         type: "GET",
         timeout: 5000,
         contentType: "application/json",
         cache: false,
-        url: "/v3/componentes.php?all",
+        url: "/v3/automoveis.php?all",
         error: function() {
             alert("Erro ao buscar dados, tente novamente mais tarde!");
         },
         success: function(result) {
-            allComponentes = result;
-            componentesCount = allComponentes.length;
-            totalPagesCount = Math.ceil(componentesCount / pageSize);
+            allAutomoveis = result;
+            automoveisCount = allAutomoveis.length;
+            totalPagesCount = Math.ceil(automoveisCount / pageSize);
             lastPageNumber = (totalPagesCount > 1) ? (totalPagesCount -1) : 0;
             try {
                 if(page === 'last') {
@@ -58,7 +58,7 @@ function ajax_GetComponentes(page)
 
     });
 }
-function ajax_EditComponente(id) 
+function ajax_EditAutomovel(id) 
 {
     var data = {
         action: 'update',
@@ -66,10 +66,10 @@ function ajax_EditComponente(id)
         nome: $('#editor-form #nome').val(),
         descricao: $('#editor-form #descricao').val()
     }
-    $.post("/v3/componentes.php", data, function (result) {
-        render_AlertSuccess("Componente editado com sucesso!");
+    $.post("/v3/automoveis.php", data, function (result) {
+        render_AlertSuccess("Automóvel editado com sucesso!");
         remove_EditorForm();
-        ajax_GetComponentes('reload');
+        ajax_GetAutomoveis('reload');
     })
     .fail(function(error) {
         err = error.responseJSON;
@@ -83,37 +83,37 @@ function ajax_EditComponente(id)
     })
 
 }
-function renderTable(itens) 
+function render_Table(itens) 
 {
     targetTable.empty();
     itens.forEach(function(item) {
         targetTable.append(template_GenerateTableItem(item));
     });
 }
-function ajax_DeleteManyComponentes(comps)
+function ajax_DeleteManyAutomoveis(comps)
 {
     let actualPage = activePageNumber;
-    $.post("/v3/componentes.php", {'action': 'delete_many', 'items': comps}, function (data) {
+    $.post("/v3/automoveis.php", {'action': 'delete_many', 'items': comps}, function (data) {
         render_AlertSuccess(data.message);
     })
     .fail(function(error) {
         renderAlertError("Não foi possível executar a operação ["+error.message+"| cód: "+error.code+"]");
     })
     .always(function() {
-        ajax_GetComponentes('reload');
+        ajax_GetAutomoveis('reload');
     })
 }
 function render_Page(pageNumber) 
 {
     pageNumber = (pageNumber > 0) ? pageNumber : 0;
     let startItem = pageNumber * pageSize;
-    let slice = allComponentes.slice(startItem, (startItem + pageSize));
+    let slice = allAutomoveis.slice(startItem, (startItem + pageSize));
     toggle_TablePanel(true);
-    renderTable(slice);
+    render_Table(slice);
     activePageNumber = pageNumber;
     update_PageButtoms();
     $('#table-itemcount').empty();
-    $('#table-itemcount').append(allComponentes.length + 'Itens');
+    $('#table-itemcount').append(allAutomoveis.length + 'Itens');
 }
 function toggle_TablePanel(val)
 {
@@ -141,7 +141,7 @@ function render_CreateForm()
 function render_EditForm(id)
 {
     toggle_TablePanel(false);
-    let item = allComponentes.filter(x => x.id === id);
+    let item = allAutomoveis.filter(x => x.id === id);
     mainContainer.append(template_GenerateEditorForm(true, item));
 }
 function onClick_NextPage()
@@ -171,10 +171,10 @@ function onClick_ExcluirVarios()
         }
     else 
         {
-            ajax_DeleteManyComponentes(selected);
+            ajax_DeleteManyAutomoveis(selected);
         }
 }
-function ajax_CreateComponente() 
+function ajax_CreateAutomovel() 
 {
     var data = {
         action: 'create',
@@ -182,10 +182,10 @@ function ajax_CreateComponente()
         descricao: $('#editor-form #descricao').val()
     }
 
-    $.post("/v3/componentes.php", data, function (result) {
-        render_AlertSuccess("Componente criado com sucesso!");
+    $.post("/v3/automoveis.php", data, function (result) {
+        render_AlertSuccess("Automóvel criado com sucesso!");
         remove_EditorForm();
-        ajax_GetComponentes('last');
+        ajax_GetAutomoveis('last');
     })
     .fail(function(error) {
         err = error.responseJSON;
@@ -220,11 +220,14 @@ function template_GenerateTableItem(item)
     return `<tr>
     <td class="td-select"><input type="checkbox" value="${item.id}" class="item-checkbox"></td>
     <td>${item.id}</td>
-    <td>${item.nome}</td>
-    <td>${item.descricao}</td>
+    <td>${item.placa}</td>
+    <td>${item.preco}</td>
+    <td>${item.ano_fabricacao}/${item.ano_modelo}</td>
+    <td>${item.km}</td>
+    <td>${item.nome_marca}</td>
     <td>
-        <i class="material-icons clickable" onclick="onClick_EditComponente(${item.id})">edit</i>
-        <i class="material-icons clickable" onclick="onClick_DeleteComponente(${item.id})">delete</i>
+        <i class="material-icons clickable" onclick="onClick_EditAutomovel(${item.id})">edit</i>
+        <i class="material-icons clickable" onclick="onClick_DeleteAutomovel(${item.id})">delete</i>
     </td>
     </tr>`;
 }
@@ -250,10 +253,9 @@ function template_GenerateEditorForm(isEditar, data)
     let descricao = (item != undefined) ? item.descricao : '';
     let id = (item != undefined) ? item.id : '';
     let editar = (isEditar != undefined) ? isEditar : false;
-    let method = editar ? "ajax_EditComponente("+id+")" : "ajax_CreateComponente()" ;
+    let method = editar ? "ajax_EditAutomovel("+id+")" : "ajax_CreateAutomovel()" ;
     let verb = editar ? "Editar" : "Criar";
-
-    let panelTitle = verb + " componente";
+    let panelTitle = verb + " automóvel";
 
     return `<div id="editor-form-wrapper" class="card">
                 <div class="card-header">
@@ -266,11 +268,11 @@ function template_GenerateEditorForm(isEditar, data)
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="control-label" for="nome" >Nome do componente</label>
+                                <label class="control-label" for="nome" >Nome da marca</label>
                                 <input  type="text" 
                                         class="form-control" 
                                         name="nome" id="nome" 
-                                        placeholder="Insira o nome do componente aqui" 
+                                        placeholder="Insira o nome da marca aqui" 
                                         value="${nome}"
                                         maxlength="40">
                             </div>  
@@ -278,12 +280,12 @@ function template_GenerateEditorForm(isEditar, data)
 
                         <div class="col-md-6">
                             <div class="form group" data-group="descricao">
-                                <label for="descricao">Descrição do componente</label>
+                                <label for="descricao">Descrição da marca</label>
                                 <input  type="text" 
                                         class="form-control" 
                                         name="descricao" 
                                         id="descricao" 
-                                        placeholder="Insira uma descrição para seu componente" value="${descricao}"
+                                        placeholder="Insira uma descrição para sua marca" value="${descricao}"
                                         >
                             </div>
                         </div>
@@ -311,34 +313,34 @@ function render_AlertError(msg)
             $(this).remove();
         });
 }
-function onClick_EditComponente(id) 
+function onClick_EditAutomovel(id) 
 {
     render_EditForm(id);
 }
-function ajax_DeleteComponente(id) 
+function ajax_DeleteMarca(id) 
 {
-    $.post("/v3/componentes.php", {'action': 'delete_one', 'id': id}, function (data) {
-        removeItemFromList(id);
+    $.post("/v3/automoveis.php", {'action': 'delete_one', 'id': id}, function (data) {
+        remove_ItemFromList(id);
         render_AlertSuccess(data.message);
     })
     .fail(function(error) {
         renderAlertError("Não foi possível executar a operação ["+error.message+"| cód: "+error.code+"]");
     })
     .always(function() {
-        reloadTable();
+        update_reloadTable();
     })
 }
-function onClick_DeleteComponente(id) 
+function onClick_DeleteAutomovel(id) 
 {
-    ajax_DeleteComponente(id);
+    ajax_DeleteMarca(id);
 }
-function reloadTable()
+function update_reloadTable()
 {
     render_Page(activePageNumber);
 }
-function removeItemFromList(id)
+function remove_ItemFromList(id)
 {
-    allComponentes = allComponentes.filter(function(item) {
+    allAutomoveis = allAutomoveis.filter(function(item) {
         return item.id != id;
     })
 }

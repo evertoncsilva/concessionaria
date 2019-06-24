@@ -1,12 +1,14 @@
 <?php
 require_once __DIR__.'/../../util/config.php';
 require_once __DIR__.'/../DTOs/DTO.php';
+require_once __DIR__.'/../models/default-error-response.model.php';
+require_once __DIR__.'/../models/default-success-response.model.php';
 
 class Controller {
     private     $templateFolder;
     private     $baseTemplate;
     private     $modelName;
-    public   $routes;
+    public      $routes;
 
     public $pageTitle;
     public $activePage;
@@ -18,13 +20,13 @@ class Controller {
         $nameLowerCase = strtolower($name);
         $nameUcFirst = ucfirst($nameLowerCase);
 
-        $this->templateFolder = $nameLowerCase;
-        $this->baseTemplate = $nameLowerCase.'_index.php';
-        $this->modelName = $nameUcFirst;
-        $this->pageTitle = $nameUcFirst;
-        $this->activePage = $nameLowerCase;
-        $this->templateStyles = $nameLowerCase;
-        $this->DTO = $DTO;
+        $this->templateFolder   = $nameLowerCase;
+        $this->baseTemplate     = $nameLowerCase.'_index.php';
+        $this->modelName        = $nameUcFirst;
+        $this->pageTitle        = $nameUcFirst;
+        $this->activePage       = $nameLowerCase;
+        $this->templateStyles   = $nameLowerCase;
+        $this->DTO              = $DTO;
     }
 
     public function renderIndex() 
@@ -43,17 +45,35 @@ class Controller {
     }
 
     /**
-     *  Recebe uma array de argumentos que inicializam as rotas:
-     *  array['opcoes']
-     *          ['tipo']    Tipo da rota, 'get' ou 'post'
-     *          ['rota']    Nome da rota, ex 'index'
-     *          ['metodo']  Metodo chamado ex 'getAll'
+     * Evia um Json com mensagem de erro
+     *
      * @param [array] $args
+     *              [   'response-code' -> Código HTTP de resposta, default: 400
+     *                  'msg'           -> Mensagem de resposta, default: "Internal error"
+     *                  'error-code'    -> Código de erro, default: 1
+     *              ]
      * @return void
      */
-    protected function set_route($args) {
+    public function error($args)
+    {
+        $responseCode = isset($args['response-code']) ? $args['response-code'] : 400;
+        $errocode = isset($args['error-code']) ? $args['error-code'] : null;
+        $msg = isset($args['msg']) ? $args['msg'] : null;
 
+        header('Content-Type: application/json');
+        http_response_code($responseCode);
+
+        $error_obj = new DefaultErrorResponse($args);
+
+        echo json_encode($error_obj);
+
+        die;
     }
+    public function success($args) {
+        http_response_code(200);
+        $this->send(new DefaultSuccesResponse($args));
+    }
+
     protected function isValidRoute($route, $type)
     {
         if (isset($this->routes[$type])) {
@@ -65,6 +85,7 @@ class Controller {
 
         return false;
     }
+    
     public function request()
     {
         $req    = $_REQUEST;
@@ -74,7 +95,7 @@ class Controller {
         if(empty($req)) {
             $this->renderIndex();
         }
-        elseif (!empty($get)) {
+        elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $keys = array_keys($get);
             $route = $keys[0];
             if($this->isValidRoute($route, 'get')) 
@@ -82,7 +103,26 @@ class Controller {
                 $routeMethod = $this->routes['get'][$route];
                 return $this->$routeMethod($req);
             }
+            else 
+            {
+                $this->error(['response-code'=> 404, 'msg' => 'Route not found']);
+            }
         }
+        elseif($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $keys = array_keys($post);
+            $route = (isset($post['action'])) ? $post['action'] : '';
+            if($this->isValidRoute($route, 'post'))
+            {
+                $routeMethod = $this->routes['post'][$route];
+                return $this->$routeMethod($post);
+            } 
+            else 
+            {
+                $this->error(['response-code'=> 404, 'msg' => 'Route not found']);
+            }
+        }
+
+        // TODO: render 404
 
     }
 }

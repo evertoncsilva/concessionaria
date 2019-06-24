@@ -2,7 +2,7 @@
 require_once __DIR__.'/../../util/config.php';
 require_once 'model.php';
 
-class Componente extends Model {
+class Marca extends Model {
     public $id = null;
     public $nome = null;
     public $descricao = null;
@@ -15,10 +15,10 @@ class Componente extends Model {
     {
         return ['nome', 'descricao'];
     }
-    public static function create(array $data) : Componente
+    public static function create(array $data) : Marca
     {
 
-        $instance = new Componente();
+        $instance = new Marca();
         foreach ($data as $key => $value) {
             if (property_exists($instance, $key))
             {
@@ -29,7 +29,7 @@ class Componente extends Model {
     }
     public static function createEmpty() 
     {
-        $instance = new Componente();
+        $instance = new Marca();
         return $instance;
     }
     public static function validateAndCreate($args) 

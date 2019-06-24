@@ -5,7 +5,7 @@
     /**
      * Classe Model
      */
-    class DTO extends DatabaseConnector
+    abstract class DTO extends DatabaseConnector
     {
         public $tableName;
         public $properties = array();
@@ -205,8 +205,36 @@
             }
             return false;
         }
+        public function delete_one($id) : bool
+        {
+            $sql = "DELETE FROM {$this->tableName} WHERE id = {$id}";
+            $query = $this->conn->prepare($sql);
+            $query->execute();
 
-        //TODO: insertNew($data)
-        //TODO: deleteOne_byId($id)
-        //TODO: deleteMany_byId($array)
+            if($query->rowCount()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        public function delete_many($items)
+        {
+            $itms = $items;
+            $ids = implode(",", $items);
+            $sql = "DELETE FROM {$this->tableName} WHERE id IN({$ids})";
+            $query = $this->conn->prepare($sql);
+            $query->execute();
+            $rCount = $query->rowCount();
+            
+            if($query->rowCount()) {
+                return $query;
+            }
+            else {
+                return false;
+            }
+        }
+        public abstract function update($obj);
+        public abstract function create($args);
+
 }

@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__.'/../DTOs/componentes.DTO.php';
+require_once __DIR__.'/../DTOs/automoveis.DTO.php';
 require_once 'controller.php';
-class ComponenteController extends Controller {
+class AutomovelController extends Controller {
     
     public $routes = [
         'get' => [
@@ -17,8 +17,8 @@ class ComponenteController extends Controller {
     ];
     public function __construct() 
     {
-        $dto = new ComponentesDTO();
-        parent::__construct('componente', $dto);
+        $dto = new AutomoveisDTO();
+        parent::__construct('automovel', $dto);
     }
 
     public function getAll($args)
@@ -82,39 +82,57 @@ class ComponenteController extends Controller {
     
     public function create($args)
     {
-        if(!isset($args['nome']))  
-        {
+        if(     !isset($args['placa']) 
+            ||  !isset($args['renavam']) 
+            ||  !isset($args['ano_modelo']) 
+            ||  !isset($args['ano_fabricacao']) 
+            ||  !isset($args['cor']) 
+            ||  !isset($args['km']) 
+            ||  !isset($args['marca_id']) 
+            ||  !isset($args['preco']) 
+            ||  !isset($args['preco_fipe']))  
+            {
 
-            $error = [  'msg' => "Dados inválidos",
-                        'formErrors' => ['nome' => 'Não pode ser nulo'],
-                        'response-code' => 400
-            ];
-            return $this->error($error);
-        }
-        elseif (trim($args['nome']) === '')
-        {
-            $error = [  'msg' => "Dados inválidos",
-                        'formErrors' => ['nome' => 'Campo obrigatório'],
-                        'response-code' => 400
-            ];
-            return $this->error($error);
-        }
+                $error = [  'msg' => "Dados inválidos",
+                            //TODO: form errors
+                            'formErrors' => [],
+                            'response-code' => 400
+                ];
+                return $this->error($error);
+            }
+        // elseif (trim($args['nome']) === '')
+        //     {
+        //         $error = [  'msg' => "Dados inválidos",
+        //                     //TODO: form errors
+        //                     'formErrors' => [],
+        //                     'response-code' => 400
+        //         ];
+        //         return $this->error($error);
+        //     }
         else 
-        {
-            $nome = $args['nome'];
-            $descricao = (isset($args['descricao'])) ? $args['descricao'] : null;
+            {
+                $createArgs = array(
+                    'descricao'         => $args['descicao'] ?? null,
+                    'placa'             => $args['placa'], 
+                    'renavam'           => $args['renavam'], 
+                    'ano_modelo'        => $args['ano_modelo'], 
+                    'ano_fabricacao'    => $args['ano_fabricacao'], 
+                    'cor'               => $args['cor'], 
+                    'km'                => $args['km'], 
+                    'marca_id'          => $args['marca_id'], 
+                    'preco'             => $args['preco'], 
+                    'preco_fipe'        => $args['preco_fipe'], 
+                );
 
-            $createArgs = array('nome' => $nome, 'descricao' => $descricao);
-            
-            if($this->DTO->create($args))
-            {
-                return $this->success();
+                if($this->DTO->create($createArgs))
+                {
+                    return $this->success(['msg' => "Automovel criado com sucesso"]);
+                }
+                else
+                {
+                    return $this->error(['msg' => "Não foi possível criar novo automóvel"]);
+                }
             }
-            else
-            {
-                return $this->error(['msg' => "Não foi possível criar novo componente"]);
-            }
-        }
     }
     public function update($args) 
     {
@@ -140,7 +158,7 @@ class ComponenteController extends Controller {
                             'descricao' => $args['descricao'] );
             $updated =  $this->DTO->update($data);
             
-            $res = ['msg' => 'Componente atualizado com sucesso!',
+            $res = ['msg' => 'Automóvel atualizado com sucesso!',
                     'info' => $updated
             ];
 

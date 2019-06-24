@@ -1,5 +1,0 @@
-class Componente {
-    pagesize: Number;
-    
-
-}

@@ -1,5 +1,9 @@
 function setActiveLinks(activePageName) {
-    $("#menulink-"+activePageName).addClass("active");
+    $("#navlink-"+activePageName).addClass("active");
 }
 
-MAX_PAGE_SIZE = 10;
+var MAX_PAGE_SIZE = 10;
+
+function resetFormById(id) {
+    document.getElementById(id).reset();
+}

@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__.'/../DTOs/componentes.DTO.php';
+require_once __DIR__.'/../DTOs/marcas.DTO.php';
 require_once 'controller.php';
-class ComponenteController extends Controller {
+class MarcaController extends Controller {
     
     public $routes = [
         'get' => [
@@ -17,8 +17,8 @@ class ComponenteController extends Controller {
     ];
     public function __construct() 
     {
-        $dto = new ComponentesDTO();
-        parent::__construct('componente', $dto);
+        $dto = new MarcasDTO();
+        parent::__construct('marca', $dto);
     }
 
     public function getAll($args)
@@ -112,7 +112,7 @@ class ComponenteController extends Controller {
             }
             else
             {
-                return $this->error(['msg' => "Não foi possível criar novo componente"]);
+                return $this->error(['msg' => "Não foi possível criar nova marca"]);
             }
         }
     }
@@ -140,7 +140,7 @@ class ComponenteController extends Controller {
                             'descricao' => $args['descricao'] );
             $updated =  $this->DTO->update($data);
             
-            $res = ['msg' => 'Componente atualizado com sucesso!',
+            $res = ['msg' => 'Marca atualizada com sucesso!',
                     'info' => $updated
             ];
 

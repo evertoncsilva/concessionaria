@@ -1,0 +1,16 @@
+{
+    "name": "everton/automobilles",
+    "description": "Projeto inicial bling",
+    "type": "project",
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.4"
+    },
+    "authors": [
+        {
+            "name": "Everton Crespin da Silva",
+            "email": "everton.silva@bling.com.br"
+        }
+    ],
+    "require": {}
+    
+}

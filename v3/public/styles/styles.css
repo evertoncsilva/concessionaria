@@ -1,11 +1,32 @@
 /** Colocar aqui os CSS golobais que serão executados logo após o bootstrap **/
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Raleway:600&display=swap');
+
+
 .clickable {
     cursor: pointer;
 }
-.navbar {
+/*alerts*/
+.alert-fixed {
+    height: 40px;
+    text-align: center;
+    position:fixed;
+    width: 100%;
+    top: 40px;
+    z-index:9999;
+    padding: 0;
     margin-bottom: 0;
+    border: none;
+    border-radius: 0;
 }
-
+.alert-text {
+    height: 24px;
+    line-height: 1;
+    font-size: 24px;
+    vertical-align: middle;
+}
+.alert-text i {
+}
 /** Sidebar direita **/
 .sidebar-right {
     background: #337ab7;
@@ -18,10 +39,10 @@
     transition: width 1s;
 }
 .sidebar-right:hover {
-    width: 200px;
+    width: 215px;
 }
 .sidebar-right.active {
-    width: 200px;
+    width: 215px;
 }
 .sidebar-wrapper {
     display: inline-block;
@@ -39,15 +60,19 @@
     color: #ffffff;
     cursor: pointer;
 }
-
-.sidebar-right .item .glyphicon {
-    margin: 15px;
-    width: 20px;
-}
-
 .sidebar-right .item:hover {
     background: #6495c0;
     padding-left: 3px;
+}
+.sidebar-link i {
+    padding-left: 7px;
+    width: 40px;
+    vertical-align: middle;
+    font-weight: bold;
+}
+.sidebar-link {
+    font-family: 'Raleway', sans-serif;
+    font-size: 25px;
 }
 /* Spinner */
 @keyframes spinner {
@@ -83,15 +108,15 @@
     width: 40px;
     will-change: transform;
 }
-.navba-fixed-top {
-    height: 50px;
-    position: fixed;
-    width: 100%;
-    border-radius: 0;
-    top: 0;
-    z-index: 1000;
+#tablePaginator {
+    margin-top: 5px;
 }
 
-#tablepaginator {
-    margin-top: 0;
+.noshow {
+    display: none;
+}
+
+.form-control-feedback {
+    /* alinhar corretamente o icone de feedback do form */
+    text-align: left;
 }

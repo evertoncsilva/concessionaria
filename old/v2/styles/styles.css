@@ -36,6 +36,7 @@
     color: #a8a2a2;
 }
 
+
 .sidebar-right .item.active {
     color: #ffffff;
     cursor: pointer;
@@ -49,4 +50,8 @@
 .sidebar-right .item:hover {
     background: #6495c0;
     padding-left: 3px;
+}
+
+.noshow {
+    display: none;
 }
