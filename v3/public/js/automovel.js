@@ -1,3 +1,4 @@
+let original_allAutomoveis = null;
 let activePageName      = 'automoveis';
 let allAutomoveis       = null;
 let pageSize            = 10;
@@ -39,6 +40,7 @@ function ajax_GetAutomoveis(page)
         },
         success: function(result) {
             allAutomoveis = result;
+            original_allAutomoveis = result;
             automoveisCount = allAutomoveis.length;
             totalPagesCount = Math.ceil(automoveisCount / pageSize);
             lastPageNumber = (totalPagesCount > 1) ? (totalPagesCount -1) : 0;
@@ -54,6 +56,7 @@ function ajax_GetAutomoveis(page)
                 }
                 
                 $('#spinner').remove();
+                $(document).trigger("loadtable");
             } catch (error) {
                 alert("Erro ao buscar dados!\nEntre em contato conosco no e-mail: mail@mail.com");
             }
@@ -63,6 +66,8 @@ function ajax_GetAutomoveis(page)
 }
 function ajax_EditAutomovel(id) 
 {
+
+    //TODO: EDITAR AUTOMOVEL
     var data = {
         action: 'update',
         id: id,
@@ -116,7 +121,7 @@ function render_Page(pageNumber)
     activePageNumber = pageNumber;
     update_PageButtoms();
     $('#table-itemcount').empty();
-    $('#table-itemcount').append(allAutomoveis.length + 'Itens');
+    //$('#table-itemcount').append(allAutomoveis.length + 'Itens');
 }
 function toggle_TablePanel(val)
 {
@@ -225,7 +230,7 @@ function template_GenerateTableItem(item)
     return `<tr>
     <td class="td-select"><input type="checkbox" value="${item.id}" class="item-checkbox"></td>
     <td>${item.id}</td>
-    <td>${item.placa}</td>
+    <td>${item.descricao}</td>
     <td>${item.preco}</td>
     <td>${item.ano_fabricacao}/${item.ano_modelo}</td>
     <td>${item.km}</td>
@@ -568,3 +573,38 @@ function populate_CrossReferenceAutomovelComponente(auto_componentes, componente
     })
 
 }
+function update_FilterTable(value) 
+{
+    if(value === null || value === "")
+        allAutomoveis = original_allAutomoveis;
+    else 
+    {
+        allAutomoveis = original_allAutomoveis.filter(auto => {
+            return auto.descricao.contains(value) || auto.nome_marca.contains(value);
+        });
+    }
+    render_Page(0);
+}
+
+$(document).on("loadtable", function() {
+    $('#filtertext').on('keyup', function() {
+        if(this.value.length < 1)
+            {
+                allAutomoveis = original_allAutomoveis;
+                render_Page(0);
+            }
+        else 
+            {
+                let value = this.value.toLowerCase();
+                allAutomoveis = original_allAutomoveis.filter(auto => {
+                    auto.descricao = auto.descricao     || '';
+                    auto.nome_marca = auto.nome_marca   || '';
+
+                    return auto.descricao.toLowerCase().includes(value) || auto.nome_marca.toLowerCase().includes(value);
+                }); 
+                render_Page(0);
+            }
+            
+    });
+});
+

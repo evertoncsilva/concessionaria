@@ -8,15 +8,21 @@
 <div id="main-container" class="container table_container col-lg-10 col-md-12">
   <div id="table-panel" class="card">
     <div class="card-header">
-      <h3 class="panel-title">Componentes <span id="table-itemcount"class="float-right"></span>
-      </h3>
+      <div class="row">
+        <div class="col-md-9">
+          <h3 class="panel-title" class="col-md-6">Componentes</h3>
+        </div>
+        <div class="col-md-3">
+          <input class="form-control" id="filtertext" type="text" name="filter" placeholder="Filtrar...">
+        </div>
+      </div>
     </div>
     <table class="table table-hover" id="data-table">
       <thead>
         <tr>
           <th class="thead-select"><input id="checkbox-select-all" onclick="toggle_SelectAll()" type="checkbox"></th>
           <th class="thead-id" id="testeclick">#</th>
-          <th class="thead-placa">  Placa</th>
+          <th class="thead-placa">  Descrição</th>
           <th class="thead-preco">  Preco</th>
           <th class="thead-ano">    Ano fab/modelo</th>
           <th class="thead-km">     Km</th>

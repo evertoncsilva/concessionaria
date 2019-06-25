@@ -41,7 +41,7 @@
         public function getAll(): ?array
         {
             $sql =  "SELECT a.*, m.nome AS nome_marca FROM {$this->tableName} AS a ".
-                    "INNER JOIN marca AS m ON m.id = a.marca_id";
+                    "LEFT JOIN marca AS m ON m.id = a.marca_id";
 
             $data = $this->query($sql);
             

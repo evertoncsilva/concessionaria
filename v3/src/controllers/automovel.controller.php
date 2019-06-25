@@ -59,7 +59,6 @@ class AutomovelController extends Controller {
     {
         renderIndex();
     }
-
     public function delete_one($args) 
     {
         $id = (isset($args['id'])) ? $args['id'] : null;
@@ -80,7 +79,6 @@ class AutomovelController extends Controller {
             $this->error(['msg'=>"Argumentos inválidos", 'error-code' => 3]);
         }
     }
-    
     public function create($args)
     {
         if(     !isset($args['placa']) 
@@ -137,34 +135,23 @@ class AutomovelController extends Controller {
     }
     public function update($args) 
     {
-        //TODO: validação de update
-        $args = $args;
-        if(     !isset($args['id']) 
-            ||  !isset($args['nome'])
-            ||  trim($args['id']) === '' 
-            ||  trim($args['nome']) === ''
-            ||  $args['id'] < 0
-        ) 
-        {
-            $error = [
-                'msg' => "Dados inválidos",
-                'response-code' => 400
-            ];
-            return $this->error($error);
-        }
-        else 
-        {
-            $data = array(  'id' => $args['id'],
-                            'nome' => $args['nome'], 
-                            'descricao' => $args['descricao'] );
-            $updated =  $this->DTO->update($data);
-            
-            $res = ['msg' => 'Automóvel atualizado com sucesso!',
-                    'info' => $updated
-            ];
+        //    //TODO: update
+        //     $id              = $args['$id']             ?? null;
+        //     $descricao       = $args['$descricao']      ?? null;
+        //     $placa           = $args['$placa']          ?? null;
+        //     $renavam         = $args['$renavam']        ?? null;
+        //     $ano_modelo      = $args['$ano_modelo']     ?? null;
+        //     $ano_fabricacao  = $args['$ano_fabricacao'] ?? null;
+        //     $cor             = $args['$cor']            ?? null;
+        //     $km              = $args['$km']             ?? null;
+        //     $marca_id        = $args['$marca_id']       ?? null;
+        //     $preco           = $args['$preco']          ?? null;
+        //     $preco_fipe      = $args['$preco_fipe']     ?? null;
+        //     $nome_marca      = $args['$nome_marca']     ?? null;
+        //     $componentes     = $args['$componentes']    ?? null;
 
-            $this->success($res);
-        }
+            $this->DTO->update($args);
+
     }
     public function delete_many($args)
     {
@@ -204,6 +191,12 @@ class AutomovelController extends Controller {
                 $this->send($res);
             }
 
+    }
+
+    private function validaUpdate($args)
+    {
+        //TODO: VALIDA UPDATE
+        return true;
     }
 
 }
