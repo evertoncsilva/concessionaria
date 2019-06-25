@@ -15,7 +15,7 @@ class Automovel extends Model {
     public $preco           = null;
     public $preco_fipe      = null;
     public $nome_marca      = null;
-
+    public $componentes     = null;
 
     private function __construct() 
     {
@@ -45,14 +45,25 @@ class Automovel extends Model {
     public static function validateAndCreate($args) 
     {
         //TODO: VALIDAÇÃO DO AUTOMOVEL
-        // $invalid = array();
+        $instance = new Automovel();
+        $formErrors = array();
 
-        // if      (!isset($args['nome'])) array_push($invalid, 'nome');
-        // elseif  (!isset($args['descricao'])) array_push($invalid, 'descricao');
-        // else {
-        //     return static::create($args);
-        // }
-        // return null;
+        // DESCRICAO
+        // PLACA
+        // RENAVAM
+        // ANO_MODELO
+        // ANO_FABRICACAO
+        // COR
+        // KM
+        // MARCA_ID
+        // PRECO
+        // PRECO_FIPE
+
+
+
+        // ok -> instancia
+        // error -> new DefaultErrorResponse($args)
+        // depois no retorno checa se instanceof Automovel ou DefaultErrorResponse
 
     }
 }

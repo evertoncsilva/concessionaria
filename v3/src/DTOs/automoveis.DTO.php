@@ -69,5 +69,17 @@
             }
             else return false;
         }
+
+        public function getComponentes($automovel_id) {
+            $sql = "SELECT c.id FROM componente AS c LEFT JOIN automovel_componente AS ac ON ac.componente_id = c.id WHERE ac.automovel_id = {$automovel_id}; "; 
+            
+            $data = $this->query($sql);
+
+            if($data)
+                return $data;
+            else 
+                return array();
+
+        }
     }
 ?>

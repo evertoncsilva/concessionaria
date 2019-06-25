@@ -5,14 +5,15 @@ class AutomovelController extends Controller {
     
     public $routes = [
         'get' => [
-            'all' => 'getAll',
-            'paginated' => 'getPaginated',
+            'all'                   => 'getAll',
+            'paginated'             => 'getPaginated',
+            'get_componentes'       => 'get_componentes'
         ],
         'post' => [
-            'delete_one' => 'delete_one',
-            'create' => 'create',
-            'update' => 'update',
-            'delete_many' => 'delete_many'
+            'delete_one'            => 'delete_one',
+            'create'                => 'create',
+            'update'                => 'update',
+            'delete_many'           => 'delete_many'
         ]
     ];
     public function __construct() 
@@ -188,7 +189,22 @@ class AutomovelController extends Controller {
         }
         
     }
+    public function get_componentes($args)
+    {
+            $automovel_id = $args['id'] ?? null;
 
+            if($automovel_id == null)
+            {
+                $err  = ['msg' => 'Argumentos inválidos'];
+                $this->error($err);
+            }
+            else 
+            {
+                $res = $this->DTO->getComponentes($automovel_id);
+                $this->send($res);
+            }
+
+    }
 
 }
 ?>
