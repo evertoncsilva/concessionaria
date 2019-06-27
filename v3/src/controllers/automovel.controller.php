@@ -111,7 +111,7 @@ class AutomovelController extends Controller {
         else 
             {
                 $createArgs = array(
-                    'descricao'         => $args['descicao'] ?? null,
+                    'descricao'         => $args['descricao'] ?? null,
                     'placa'             => $args['placa'], 
                     'renavam'           => $args['renavam'], 
                     'ano_modelo'        => $args['ano_modelo'], 
@@ -135,23 +135,28 @@ class AutomovelController extends Controller {
     }
     public function update($args) 
     {
-        //    //TODO: update
-        //     $id              = $args['$id']             ?? null;
-        //     $descricao       = $args['$descricao']      ?? null;
-        //     $placa           = $args['$placa']          ?? null;
-        //     $renavam         = $args['$renavam']        ?? null;
-        //     $ano_modelo      = $args['$ano_modelo']     ?? null;
-        //     $ano_fabricacao  = $args['$ano_fabricacao'] ?? null;
-        //     $cor             = $args['$cor']            ?? null;
-        //     $km              = $args['$km']             ?? null;
-        //     $marca_id        = $args['$marca_id']       ?? null;
-        //     $preco           = $args['$preco']          ?? null;
-        //     $preco_fipe      = $args['$preco_fipe']     ?? null;
-        //     $nome_marca      = $args['$nome_marca']     ?? null;
-        //     $componentes     = $args['$componentes']    ?? null;
+            $automovel['id']              = $args['$id']             ?? null;
+            $automovel['descricao']       = $args['$descricao']      ?? null;
+            $automovel['placa']           = $args['$placa']          ?? null;
+            $automovel['renavam']         = $args['$renavam']        ?? null;
+            $automovel['ano_modelo']      = $args['$ano_modelo']     ?? null;
+            $automovel['ano_fabricacao']  = $args['$ano_fabricacao'] ?? null;
+            $automovel['cor']             = $args['$cor']            ?? null;
+            $automovel['km']              = $args['$km']             ?? null;
+            $automovel['marca_id']        = $args['$marca_id']       ?? null;
+            $automovel['preco']           = $args['$preco']          ?? null;
+            $automovel['preco_fipe']      = $args['$preco_fipe']     ?? null;
+            $automovel['nome_marca']      = $args['$nome_marca']     ?? null;
+            $automovel['componentes']     = $args['$componentes']    ?? null;
+
+            $componentes = $args['componentes_ids'] ?? array();
+
+            if($componentes !== null)
+                $this->DTO->compareAndUpdateComponentes($args['id'], $componentes);
 
             $this->DTO->update($args);
-
+            //valida_AndUpdate($automovel)
+            //updateComponentes($args['id'], $componentes)
     }
     public function delete_many($args)
     {
@@ -193,11 +198,16 @@ class AutomovelController extends Controller {
 
     }
 
-    private function validaUpdate($args)
+    private function valida_AndUpdate($args)
     {
         //TODO: VALIDA UPDATE
         return true;
     }
+    public function updateComponentes($automovel_id, $componentes)
+    {
+
+    }
+
 
 }
 ?>

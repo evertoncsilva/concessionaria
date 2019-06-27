@@ -39,6 +39,11 @@ function ajax_GetAutomoveis(page)
             alert("Erro ao buscar dados, tente novamente mais tarde!");
         },
         success: function(result) {
+            $('#spinner').remove();
+            if(result === null)
+            {
+                render_AlertError("Nenhum automóvel encontrado!");
+            }
             allAutomoveis = result;
             original_allAutomoveis = result;
             automoveisCount = allAutomoveis.length;
@@ -55,7 +60,6 @@ function ajax_GetAutomoveis(page)
                     render_Page(0);
                 }
                 
-                $('#spinner').remove();
                 $(document).trigger("loadtable");
             } catch (error) {
                 alert("Erro ao buscar dados!\nEntre em contato conosco no e-mail: mail@mail.com");
@@ -64,15 +68,73 @@ function ajax_GetAutomoveis(page)
 
     });
 }
+function getCheckedComponentes()
+{
+    let elements = document.getElementsByClassName('form-check-componente');
+    let componentes = [];
+
+    for (i in elements) {
+        if(elements[i].checked)
+            componentes.push(elements[i].value)
+    }
+
+    return componentes;
+}
+function ajax_CreateAutomovel() 
+{
+    var componentes = getCheckedComponentes();
+    //TODO: EDITAR AUTOMOVEL
+    var data = {
+        action: 'create',
+        descricao:          getVal_ByID('editor-form-descricao'),
+        placa:              getVal_ByID('editor-form-placa'),
+        renavam:            getVal_ByID('editor-form-renavam'),
+        ano_modelo:         getVal_ByID('editor-form-ano_modelo'),
+        ano_fabricacao:     getVal_ByID('editor-form-ano_fabricacao'),
+        cor:                getVal_ByID('editor-form-cor'),
+        km:                 getVal_ByID('editor-form-km'),
+        marca_id:           getVal_ByID('editor-form-marca_id'),
+        preco:              getVal_ByID('editor-form-preco'),
+        preco_fipe:         getVal_ByID('editor-form-preco_fipe'),
+        componentes_ids:    componentes
+
+    }
+    $.post("/v3/automoveis.php", data, function (result) {
+        render_AlertSuccess("Automóvel criado com sucesso!");
+        remove_EditorForm();
+        ajax_GetAutomoveis('reload');
+    })
+    .fail(function(error) {
+        err = error.responseJSON;
+        if(err === undefined) {
+            err.message = "Erro desconhecido";
+            err.code = "666";
+        }
+         render_AlertError("Não foi possível executar a operação ["+err.message+" | cód: "+err.code+"]");
+         if(err.formErrors)
+         update_EditorFormFieldErrors(err.formErrors);
+    })
+
+}
 function ajax_EditAutomovel(id) 
 {
-
+    var componentes = getCheckedComponentes();
     //TODO: EDITAR AUTOMOVEL
     var data = {
         action: 'update',
-        id: id,
-        nome: $('#editor-form #nome').val(),
-        descricao: $('#editor-form #descricao').val()
+        id:             id,
+        descricao:          getVal_ByID('editor-form-descricao'),
+        placa:              getVal_ByID('editor-form-placa'),
+        renavam:            getVal_ByID('editor-form-renavam'),
+        ano_modelo:         getVal_ByID('editor-form-ano_modelo'),
+        ano_fabricacao:     getVal_ByID('editor-form-ano_fabricacao'),
+        cor:                getVal_ByID('editor-form-cor'),
+        km:                 getVal_ByID('editor-form-km'),
+        marca_id:           getVal_ByID('editor-form-marca_id'),
+        preco:              getVal_ByID('editor-form-preco'),
+        preco_fipe:         getVal_ByID('editor-form-preco_fipe'),
+        componentes_ids:    componentes
+
     }
     $.post("/v3/automoveis.php", data, function (result) {
         render_AlertSuccess("Automóvel editado com sucesso!");
@@ -145,13 +207,15 @@ function render_CreateForm()
     if($('#editor-form-wrapper').length) return;
     toggle_TablePanel(false);
     mainContainer.append(template_GenerateEditorForm());
+    
 }
 function render_EditForm(id)
 {
-    ajax_getAllComponentes(id);
+    ajax_getThen_Populate_AllComponentes(id);
     toggle_TablePanel(false);
     let item = allAutomoveis.filter(x => x.id === id);
     mainContainer.append(template_GenerateEditorForm(true, item));
+    ajax_GetMarcas_ThenPopulateEditorForm(item);
 }
 function onClick_NextPage()
 {
@@ -183,35 +247,11 @@ function onClick_ExcluirVarios()
             ajax_DeleteManyAutomoveis(selected);
         }
 }
-function ajax_CreateAutomovel() 
-{
-    var data = {
-        action: 'create',
-        nome: $('#editor-form #nome').val(),
-        descricao: $('#editor-form #descricao').val()
-    }
-
-    $.post("/v3/automoveis.php", data, function (result) {
-        render_AlertSuccess("Automóvel criado com sucesso!");
-        remove_EditorForm();
-        ajax_GetAutomoveis('last');
-    })
-    .fail(function(error) {
-        err = error.responseJSON;
-        if(err === undefined) {
-            err.message = "Erro desconhecido";
-            err.code = "666";
-        }
-         render_AlertError("Não foi possível executar a operação ["+err.message+" | cód: "+err.code+"]");
-
-         if(err.formErrors)
-         update_EditorFormFieldErrors(err.formErrors);
-    })
-}
 function onClick_MenuAdicionar()
 {
     render_CreateForm();
     ajax_GetMarcas_ThenPopulateEditorForm();
+    ajax_getAllComponentes_andDisplay();
 }
 function remove_EditorForm()
 {
@@ -288,15 +328,15 @@ function template_GenerateEditorForm(isEditar, data)
                 <div class="row">
                   <div class="col-md-6">
                       <div class="form group">
-                          <label for="edito-form-descricao">Descrição do automóvel</label>
-                          <input type="text" class="form-control" name="descricao" id="edito-form-descricao" placeholder="Insira uma descrição para seu automóvel" value="${descricao}">
+                          <label for="editor-form-descricao">Descrição do automóvel</label>
+                          <input type="text" class="form-control" name="descricao" id="editor-form-descricao" placeholder="Insira uma descrição para seu automóvel" value="${descricao}">
                       </div>
                   </div>
     
                   <div class="col-md-3">
                       <div class="form-group">
-                          <label class="control-label" for="editor-form-nome">Placa</label>
-                          <input type="text" class="form-control" name="placa" id="editor-form-nome" placeholder="XXX1234" value="${placa}" maxlength="7">
+                          <label class="control-label" for="editor-form-placa">Placa</label>
+                          <input type="text" class="form-control" name="placa" id="editor-form-placa" placeholder="XXX1234" value="${placa}" maxlength="7">
                       </div>  
                   </div>
     
@@ -373,6 +413,7 @@ function template_GenerateEditorForm(isEditar, data)
                 <hr>
                 <div id="componentes-area">
                 <!-- COMPONENTES CHECKBOXES -->
+
                 </div>
                 
                 <div class="row editor-button-container">
@@ -462,10 +503,10 @@ function template_EditorFormComponentes(compos)
 
     if(compos.length > 0 )
     {
-        CompositionEvent.forEach(comp => {
+        compos.forEach(comp => {
 
         temp += `<div class="form-check-inline">
-                        <input type="checkbox" value="${comp.id}" class="form-check-input checkbox-componente" name="${comp.id}" id="checkbox-componente-${comp.id}">
+                        <input type="checkbox" value="${comp.id}" class="form-check-componente" name="${comp.id}" id="checkbox-componente-${comp.id}">
                         <label for="checkbox-componente-${comp.id}" class="form-check-label">${comp.nome}</label>
                     </div>
                     `;
@@ -520,7 +561,27 @@ function ajax_GetMarcas_ThenPopulateEditorForm(auto)
         }
     });
 }
-function ajax_getAllComponentes(id)
+function ajax_getAllComponentes_andDisplay()
+{
+    componentes = [];
+    $.ajax({
+        type: "GET",
+        timeout: 5000,
+        contentType: "application/json",
+        cache: true,
+        url: "/v3/componentes.php?all",
+        error: function() {
+            alert("Erro ao buscar dados dos componentes, tente novamente mais tarde!");
+        },
+        success: function(result) {
+            componentes = result;
+            template = template_EditorFormComponentes(componentes);
+            $('#componentes-area').append(template);
+            
+        }
+    });
+}
+function ajax_getThen_Populate_AllComponentes(id)
 {
     $.ajax({
         type: "GET",
@@ -533,11 +594,11 @@ function ajax_getAllComponentes(id)
         },
         success: function(result) {
             componentes = result;
-            ajax_getAutomovelComponentesId(id)
+            ajax_getThen_Populate_AutomovelComponentesId(id)
         }
     });
 }
-function ajax_getAutomovelComponentesId(id)
+function ajax_getThen_Populate_AutomovelComponentesId(id)
 {
     let ids = [];
     $.ajax({
@@ -565,8 +626,8 @@ function populate_CrossReferenceAutomovelComponente(auto_componentes, componente
         
         
         temp = `<div class="form-check-inline">
-                    <input type="checkbox" ${checked ? 'checked' : ''} class="form-check-input" name="componente" id="checkbox-componente-10" value="${comp.id}">
-                    <label for="checkbox-componente-10" class="form-check-label">${comp.nome}</label>
+                    <input type="checkbox" ${checked ? 'checked' : ''} class="form-check-componente" name="componente" id="checkbox-componente-${comp.id}" value="${comp.id}">
+                    <label for="checkbox-componente-${comp.id}" class="form-check-label">${comp.nome}</label>
                 </div>`;
 
         $('#componentes-area').append(temp);
@@ -597,8 +658,8 @@ $(document).on("loadtable", function() {
             {
                 let value = this.value.toLowerCase();
                 allAutomoveis = original_allAutomoveis.filter(auto => {
-                    auto.descricao = auto.descricao     || '';
-                    auto.nome_marca = auto.nome_marca   || '';
+                    auto.descricao  = auto.descricao   || '';
+                    auto.nome_marca = auto.nome_marca  || '';
 
                     return auto.descricao.toLowerCase().includes(value) || auto.nome_marca.toLowerCase().includes(value);
                 }); 

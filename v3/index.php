@@ -1,5 +1,5 @@
 <?php 
 
-header('Location: componentes.php')
+header('Location: automoveis.php')
 
 ?>

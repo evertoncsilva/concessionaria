@@ -13,6 +13,17 @@ class DefaultErrorResponse {
         if(isset($args['info'])) { $this->info = $args['info']; }
         if(isset($args['formErrors'])) { $this->formErrors = $args['formErrors']; }
     }
+
+    /**
+     * Adiciona um erro de form às informações do erro, 
+     * para posteriormente ser consumido pelo form
+     *
+     * @param [array] $formError
+     * @return void
+     */
+    public function addFormError($error) {
+        array_push($this->formErrors, $error);
+    }
 }
 
 ?>
