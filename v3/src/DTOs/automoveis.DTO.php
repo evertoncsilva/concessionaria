@@ -195,7 +195,7 @@
 
             $sql = "SELECT * FROM automovel ORDER BY {$orderby} ASC LIMIT :limit OFFSET :offset";
             if($filter != null )
-                $sql =  "SELECT a.* FROM automovel AS a LEFT JOIN marca AS m ON m.id = a.marca_id"
+                $sql =  "SELECT a.*, m.nome AS nome_marca FROM automovel AS a LEFT JOIN marca AS m ON m.id = a.marca_id"
                         ." WHERE a.descricao LIKE '%{$filter}%'"
                         ." OR m.nome LIKE '%{$filter}%'"
                         ." ORDER BY {$orderby} ASC LIMIT :limit OFFSET :offset";

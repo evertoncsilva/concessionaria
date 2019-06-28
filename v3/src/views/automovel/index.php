@@ -16,7 +16,8 @@
           <input class="form-control" id="filtertext" type="text" name="filter" placeholder="Filtrar...">
         </div>
         <div class="col-md-1" id="col-filterbutton">
-          <span class="btn btn-outline-info filterbutton"><i class="material-icons">search</i></span>
+          <span class="btn btn-outline-info filterbutton"><i class="material-icons" onclick="ajax_getPage()">search</i></span>
+          <span class="btn btn-outline-danger filterbutton noshow" id="btn-clearfilter"><i class="material-icons" onclick="clearFilter()">clear</i></span>
         </div>
       </div>
     </div>

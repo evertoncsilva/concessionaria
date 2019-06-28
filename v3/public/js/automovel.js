@@ -1,5 +1,6 @@
 let original_allAutomoveis = null;
 let activePageName      = 'automoveis';
+let allAutomoveis       = [];
 let pageSize            = 10;
 let activePageNumber    = 0;
 let automoveisCount     = 0;
@@ -9,6 +10,7 @@ let lastAlertId         = 0;
 let mainContainer       = $("#main-container");
 let componentes         = null;
 let auto_componentes_ids = null;
+let filtertext          = '';
 const editorForm        = $('#editor-form');
 const tablePaginator    = $('#tablePaginator');
 const tablePanel        = $('#table-panel');
@@ -18,6 +20,13 @@ const checkboxAll       = $('#checkbox-select-all');
 
 window.addEventListener("load", _initialize, true);
 
+function clearFilter()
+{
+    filtertext = '';
+    $('#filtertext').val('');
+    $('#btn-clearfilter').removeClass("noshow");
+    ajax_getPage();
+}
 function render_Pagination()
 {
     let maxLinksbefore = 3;
@@ -41,8 +50,6 @@ function render_Pagination()
             renderedAfter++;
         }
     
-        
-
     let template = `    <nav aria-label="Page navigation example">
                             <ul class="pagination">
                             <li class="page-item ${linkActive -1 >= 0 ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive -1 >= 0 ? (linkActive -1) : 0})">Anterior</a></li>
@@ -58,11 +65,11 @@ function gotoPage(num)
 {
     ajax_getPage(num);
 }
-function ajax_getPage(pageNum = 0, filter = null)
+function ajax_getPage(pageNum = 0, filter = filtertext)
 {
     $.ajax({
         type: "GET",
-        timeout: 5000,
+        timeout: 1000,
         contentType: "application/json",
         cache: false,
         url: "/v3/automoveis.php?getpage",
@@ -74,11 +81,12 @@ function ajax_getPage(pageNum = 0, filter = null)
             activePageNumber = parseInt(result.currentpage);
             totalPagesCount = parseInt(result.totalpages);
             automoveisCount = parseInt(result.totalitems);
+            allAutomoveis = result.data;
             $('#spinner').remove();
             if(result === null)
-            {
-                render_AlertError("Nenhum automóvel encontrado!");
-            }
+                {
+                    render_AlertError("Nenhum automóvel encontrado!");
+                }
             automoveisCount = result.totalitems ? result.totalitems : 0;
             totalPagesCount = result.totalpages ? result.totalpages : 0;
             render_Page(result.data);
@@ -89,6 +97,16 @@ function _initialize()
 {
     setActiveLinks(activePageName);
     ajax_getPage();
+
+    $('#filtertext').keyup(function(){
+        filtertext = this.value;
+        if(this.value != '')
+            $('#btn-clearfilter').removeClass("noshow");
+        else {
+            $('#btn-clearfilter').addClass("noshow");
+            ajax_getPage();
+        }
+    });
 }
 function ajax_GetAutomoveis(page) 
 {
@@ -165,7 +183,7 @@ function ajax_CreateAutomovel()
     $.post("/v3/automoveis.php", data, function (result) {
         render_AlertSuccess("Automóvel criado com sucesso!");
         remove_EditorForm();
-        ajax_GetAutomoveis('reload');
+        ajax_getPage();
     })
     .fail(function(error) {
         err = error.responseJSON;
@@ -221,6 +239,8 @@ function ajax_EditAutomovel(id)
 function render_Table(itens) 
 {
     targetTable.empty();
+    if(automoveisCount === 0)
+        render_AlertError("Nenhum automóvel encontrado!");
     itens.forEach(function(item) {
         targetTable.append(template_GenerateTableItem(item));
     });
