@@ -37,3 +37,13 @@
 .form-group.has-feedback .form-control-feedback {
     display: none;
 }
+.filterbutton {
+    max-height: 37px;
+}
+#col-filtertext {
+    padding-right: 0;
+}
+#col-filterbutton {
+    padding-left: 0;
+    padding-right: 0;
+}

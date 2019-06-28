@@ -49,7 +49,7 @@ function render_Pagination()
                                 ${template_linksbefore}
                             <li class="page-item active"><a class="page-link">${linkActive +1}</a></li>
                                 ${template_linksafter}
-                            <li class="page-item ${linkActive +1 <= totalPagesCount ? '' : 'disabled'}"><a class="page-link" onlick="gotoPage(${linkActive + 1 <= totalPagesCount ? (linkActive -1) : 0})">Próximo</a></li>
+                            <li class="page-item ${linkActive +1 <= totalPagesCount ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive + 1 <= totalPagesCount ? (linkActive + 1) : 0})">Próximo</a></li>
                             </ul>
                         </nav>`
     tablePaginator.html(template);
@@ -58,7 +58,7 @@ function gotoPage(num)
 {
     ajax_getPage(num);
 }
-function ajax_getPage(pageNum = 0)
+function ajax_getPage(pageNum = 0, filter = null)
 {
     $.ajax({
         type: "GET",
@@ -66,7 +66,7 @@ function ajax_getPage(pageNum = 0)
         contentType: "application/json",
         cache: false,
         url: "/v3/automoveis.php?getpage",
-        data: {page: pageNum},
+        data: {page: pageNum, filter: filter},
         error: function() {
             alert("Erro ao buscar dados, tente novamente mais tarde!");
         },

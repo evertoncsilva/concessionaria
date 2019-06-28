@@ -12,8 +12,11 @@
         <div class="col-md-9">
           <h3 class="panel-title" class="col-md-6">Componentes</h3>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2" id="col-filtertext">
           <input class="form-control" id="filtertext" type="text" name="filter" placeholder="Filtrar...">
+        </div>
+        <div class="col-md-1" id="col-filterbutton">
+          <span class="btn btn-outline-info filterbutton"><i class="material-icons">search</i></span>
         </div>
       </div>
     </div>

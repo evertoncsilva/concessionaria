@@ -181,7 +181,7 @@
             }
         }
 
-        public function getPage($pageRequested, $itemsPerPage, $orderby = null)
+        public function getPage($pageRequested, $itemsPerPage, $orderby = null, $filter = null)
         {
             $total_Items = $this->getTotalAmount();
             $total_Pages = ($total_Items == 0 ? 0 : (int) ceil($total_Items/$itemsPerPage));
@@ -194,6 +194,11 @@
             $orderby = $orderby == null ? 'id' : $orderby;
 
             $sql = "SELECT * FROM automovel ORDER BY {$orderby} ASC LIMIT :limit OFFSET :offset";
+            if($filter != null )
+                $sql =  "SELECT a.* FROM automovel AS a LEFT JOIN marca AS m ON m.id = a.marca_id"
+                        ." WHERE a.descricao LIKE '%{$filter}%'"
+                        ." OR m.nome LIKE '%{$filter}%'"
+                        ." ORDER BY {$orderby} ASC LIMIT :limit OFFSET :offset";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':limit', $limit);
             $stmt->bindParam(':offset', $offset);

@@ -172,7 +172,8 @@ class AutomovelController extends Controller {
         $page = $args['page'] ?? 0;
         $itensPerPage = $args['itemsperpage'] ?? 10;
         $orderby = $args['orderby'] ?? 'id';
-        $data = $this->DTO->getPage($page, $itensPerPage, $orderby);
+        $filter = $args['filter'] ?? null;
+        $data = $this->DTO->getPage($page, $itensPerPage, $orderby, $filter);
         $this->send($data);
     }
 
