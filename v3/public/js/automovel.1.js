@@ -1,11 +1,14 @@
 let original_allAutomoveis = null;
 let activePageName      = 'automoveis';
 let pageSize            = 10;
+let allAutomoveis       = [];
 let activePageNumber    = 0;
 let automoveisCount     = 0;
 let totalPagesCount     = 0;
 let lastPageNumber      = 0;
 let lastAlertId         = 0;
+let nextButtom          = $("#paginator-next");
+let previousButtom      = $("#paginator-previous");
 let mainContainer       = $("#main-container");
 let componentes         = null;
 let auto_componentes_ids = null;
@@ -18,118 +21,51 @@ const checkboxAll       = $('#checkbox-select-all');
 
 window.addEventListener("load", _initialize, true);
 
-function render_Pagination()
-{
-    let maxLinksbefore = 3;
-    let maxLinksafter = 3;
-    
-    let linkActive = activePageNumber;
-    let template_linksbefore = "";
-    let template_linksafter = "";
-    let renderedBefore  = 0;
-    let renderedAfter   = 0;
-    //calcular quantidade de links antes da página atual ativa:
-        for(let i = linkActive -1; i >= 0 && renderedBefore < maxLinksbefore ; i--)
-        {
-            template_linksbefore = `<li class="page-item"><a class="page-link" onclick="gotoPage(${i})">${i+1}</a></li>` + template_linksbefore;
-            renderedBefore++;
-        }
-    //calcular quantidade de links antes da página atual ativa:
-        for(let i = linkActive +1; i < totalPagesCount && renderedAfter < maxLinksafter ; i++)
-        {
-            template_linksafter += `<li class="page-item"><a class="page-link" onclick="gotoPage(${i})">${i+1}</a></li>`;
-            renderedAfter++;
-        }
-    
-        
 
-    let template = `    <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                            <li class="page-item ${linkActive -1 >= 0 ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive -1 >= 0 ? (linkActive -1) : 0})">Anterior</a></li>
-                                ${template_linksbefore}
-                            <li class="page-item active"><a class="page-link">${linkActive +1}</a></li>
-                                ${template_linksafter}
-                            <li class="page-item ${linkActive +1 <= totalPagesCount ? '' : 'disabled'}"><a class="page-link" onlick="gotoPage(${linkActive + 1 <= totalPagesCount ? (linkActive -1) : 0})">Próximo</a></li>
-                            </ul>
-                        </nav>`
-    tablePaginator.html(template);
-}
-function gotoPage(num)
-{
-    ajax_getPage(num);
-}
-function ajax_getPage(pageNum = 0)
-{
-    $.ajax({
-        type: "GET",
-        timeout: 5000,
-        contentType: "application/json",
-        cache: false,
-        url: "/v3/automoveis.php?getpage",
-        data: {page: pageNum},
-        error: function() {
-            alert("Erro ao buscar dados, tente novamente mais tarde!");
-        },
-        success: function(result) {
-            activePageNumber = parseInt(result.currentpage);
-            totalPagesCount = parseInt(result.totalpages);
-            automoveisCount = parseInt(result.totalitems);
-            $('#spinner').remove();
-            if(result === null)
-            {
-                render_AlertError("Nenhum automóvel encontrado!");
-            }
-            automoveisCount = result.totalitems ? result.totalitems : 0;
-            totalPagesCount = result.totalpages ? result.totalpages : 0;
-            render_Page(result.data);
-        }
-    });
-}
 function _initialize() 
 {
     setActiveLinks(activePageName);
-    ajax_getPage();
+    ajax_GetAutomoveis();
 }
-function ajax_GetAutomoveis(page) 
-{
-    $.ajax({
-        type: "GET",
-        timeout: 5000,
-        contentType: "application/json",
-        cache: false,
-        url: "/v3/automoveis.php?all",
-        error: function() {
-            alert("Erro ao buscar dados, tente novamente mais tarde!");
-        },
-        success: function(result) {
-            $('#spinner').remove();
-            if(result === null)
-            {
-                render_AlertError("Nenhum automóvel encontrado!");
-            }
-            allAutomoveis = result || [];
-            original_allAutomoveis = result;
-            automoveisCount = allAutomoveis.length;
-            totalPagesCount = Math.ceil(automoveisCount / pageSize);
-            lastPageNumber = (totalPagesCount > 1) ? (totalPagesCount -1) : 0;
-            render_Pagination();
-            try {
-                if(page === 'last') {
-                    render_Page(lastPageNumber);
-                }
-                else if(page === 'reload') {
-                    render_Page(activePageNumber);
-                }
-                else {
-                    render_Page(0);
-                }
-            } catch (error) {
-                alert("Erro ao buscar dados!\nEntre em contato conosco no e-mail: mail@mail.com");
-            }
-        }
+// function ajax_GetAutomoveis(page) 
+// {
+//     $.ajax({
+//         type: "GET",
+//         timeout: 5000,
+//         contentType: "application/json",
+//         cache: false,
+//         url: "/v3/automoveis.php?all",
+//         error: function() {
+//             alert("Erro ao buscar dados, tente novamente mais tarde!");
+//         },
+//         success: function(result) {
+//             $('#spinner').remove();
+//             if(result === null)
+//             {
+//                 render_AlertError("Nenhum automóvel encontrado!");
+//             }
+//             allAutomoveis = result || [];
+//             original_allAutomoveis = result;
+//             automoveisCount = allAutomoveis.length;
+//             totalPagesCount = Math.ceil(automoveisCount / pageSize);
+//             lastPageNumber = (totalPagesCount > 1) ? (totalPagesCount -1) : 0;
+//             try {
+//                 if(page === 'last') {
+//                     render_Page(lastPageNumber);
+//                 }
+//                 else if(page === 'reload') {
+//                     render_Page(activePageNumber);
+//                 }
+//                 else {
+//                     render_Page(0);
+//                 }
+//             } catch (error) {
+//                 alert("Erro ao buscar dados!\nEntre em contato conosco no e-mail: mail@mail.com");
+//             }
+//         }
 
-    });
-}
+//     });
+// }
 function getCheckedComponentes()
 {
     let elements = document.getElementsByClassName('form-check-componente');
@@ -238,11 +174,17 @@ function ajax_DeleteManyAutomoveis(comps)
         ajax_GetAutomoveis('reload');
     })
 }
-function render_Page(data) 
+function render_Page(pageNumber) 
 {
+    pageNumber = (pageNumber > 0) ? pageNumber : 0;
+    let startItem = pageNumber * pageSize;
+    let slice = [];
+    if(allAutomoveis.length > 0)
+        {
+            slice = allAutomoveis.slice(startItem, (startItem + pageSize));
+        }
     toggle_TablePanel(true);
-    render_Table(data);
-    render_Pagination();
+    render_Table(slice);
     $('#table-itemcount').empty();
     //$('#table-itemcount').append(allAutomoveis.length + 'Itens');
 }
@@ -277,19 +219,6 @@ function render_EditForm(id)
     let item = allAutomoveis.filter(x => x.id == id);
     mainContainer.append(template_GenerateEditorForm(true, item));
     ajax_GetMarcas_ThenPopulateEditorForm(item);
-}
-function onClick_NextPage()
-{
-    if(activePageNumber < lastPageNumber) {
-        render_Page(activePageNumber + 1, );
-    }
-}
-function onClick_PreviousPage()
-{
-    if(activePageNumber > 0)
-    {
-        render_Page(activePageNumber -1);
-    }
 }
 function onClick_ExcluirVarios()
 {
@@ -538,6 +467,16 @@ function update_EditorFormFieldErrors(data)
 {
     console.log(data);
     data.forEach(data => render_InvalidFormFeedback(data));
+}
+function update_EditorFormValidation(info) 
+{
+    //TODO: VALIDAR EDITOR FORM
+        //TODO: ano modelo > ano fab?
+
+    // receber os formErrors do servidor e atualizar o form com os erros
+    // e as mensagens recebidas de cada campo
+    // info[formErrors] 
+    //          ['nomecampo' => 'mensagem de erro do campo']
 }
 function template_EditorFormComponentes(compos) 
 {

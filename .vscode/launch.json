@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "attach",
             "name": "Attach to Chrome",
-            "url": "http://localhost/v3/",
+            "url": "http://localhost/v3/automoveis.php",
             "port": 9222,
             "webRoot": "${workspaceFolder}"
         },

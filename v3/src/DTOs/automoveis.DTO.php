@@ -19,30 +19,47 @@
         }
         public function create($args) {
             $auto = $this->modelName::validateAndCreate($args);
+
+            if($auto instanceof DefaultErrorResponse) return $auto; //retorna o erro caso não for válido
+
+
             $sql =  "INSERT INTO {$this->tableName} (descricao, placa, renavam, ano_modelo, ano_fabricacao, cor, km, marca_id, preco, preco_fipe) " .
-                    "VALUES(    '{$args['descricao']}'" . 
-                            ",  '{$args['placa']}'" .
-                            ",  '{$args['renavam']}'" .
-                            ",  {$args['ano_modelo']}" .
-                            ",  {$args['ano_fabricacao']}" .
-                            ",  '{$args['cor']}'" .
-                            ",  {$args['km']}" .
-                            ",  {$args['marca_id']}" .
-                            ",  {$args['preco']}" .
-                            ",  {$args['preco_fipe']}" .
-                    ") ";
+                    "VALUES(     '{$auto->descricao}'"  
+                            .",  '{$auto->placa}'" 
+                            .",  '{$auto->renavam}'" 
+                            .",   {$auto->ano_modelo}" 
+                            .",   {$auto->ano_fabricacao}" 
+                            .",  '{$auto->cor}'" 
+                            .",   {$auto->km}" 
+                            .",   {$auto->marca_id}" 
+                            .",   {$auto->preco}" 
+                            .",   {$auto->preco_fipe}" 
+                    ."); ";
 
             $query = $this->conn->prepare($sql);
-            $query->execute();
-
-            if($query->rowCount()) return true;
+            try {
+                $query->execute();
+            }
+            catch(PDOException $e)
+            {
+                $errorInfo = $query->errorInfo();
+                if($errorInfo[1] == 1062)
+                {
+                    $err = ['msg' => 'Não é permitido registros duplicados!',
+                            'code' => 1012];
+                    $error = new DefaultErrorResponse($err);
+                    return $error;
+                }
+            }
+            $test = $query->rowCount();
+            if($query->rowCount()) return $auto;
             else return false;
         }
 
         public function getAll(): ?array
         {
             $sql =  "SELECT a.*, m.nome AS nome_marca FROM {$this->tableName} AS a ".
-                    "LEFT JOIN marca AS m ON m.id = a.marca_id";
+                    "LEFT JOIN marca AS m ON m.id = a.marca_id; ";
 
             $data = $this->query($sql);
             
@@ -58,32 +75,34 @@
             }
             return null;
         }
-
         public function update($args) {
+            $auto = $this->modelName::validateAndCreate($args);
+
+            if($auto instanceof DefaultErrorResponse) return $auto;
 
             $sql = "UPDATE {$this->tableName}"
                     ." SET"
-                        ." descricao='{$args['descricao']}',"
-                        ." placa='{$args['placa']}',"
-                        ." renavam='{$args['renavam']}',"
-                        ." ano_modelo={$args['ano_modelo']},"
-                        ." ano_fabricacao={$args['ano_fabricacao']},"
-                        ." cor='{$args['cor']}',"
-                        ." km={$args['km']},"
-                        ." marca_id={$args['marca_id']},"
-                        ." preco={$args['preco']},"
-                        ." preco_fipe={$args['preco_fipe']}"
-                    ." WHERE id={$args['id']};";
+                        ." descricao='{$auto->descricao}',"
+                        ." placa='{$auto->placa}',"
+                        ." renavam='{$auto->renavam}',"
+                        ." ano_modelo={$auto->ano_modelo},"
+                        ." ano_fabricacao={$auto->ano_fabricacao},"
+                        ." cor='{$auto->cor}',"
+                        ." km={$auto->km},"
+                        ." marca_id={$auto->marca_id},"
+                        ." preco={$auto->preco},"
+                        ." preco_fipe={$auto->preco_fipe}"
+                    ." WHERE id={$auto->id};";
 
             $query = $this->conn->prepare($sql);
-            $query->execute();
-            if($query->rowCount()) 
+            $result = $query->execute();
+            if($result) 
             {
-                return $this->getById($args['id']);
+                // return $this->getById($args['id']);
+                return true;
             }
             else return false;
         }
-
         public function getComponentes($automovel_id) {
             $sql = "SELECT c.id FROM componente AS c LEFT JOIN automovel_componente AS ac ON ac.componente_id = c.id WHERE ac.automovel_id = {$automovel_id}; "; 
             
@@ -95,11 +114,20 @@
                 return array();
 
         }
-
         public function compareAndUpdateComponentes($auto_id, $componentes)
         {
+            if($componentes === null)
+                {
+                    // caso não haja compoentes marcados assegura de que 
+                    // serão deletadas todas as referências
+                    $sql = "DELETE FROM automovel_componente WHERE automovel_id = {$auto_id}";
+                    $query  = $this->conn->prepare($sql);
+                    $query->execute();
+                    return;
+                }
             //componentes que já estão neste
             $sql = "SELECT c.id FROM componente AS c LEFT JOIN automovel_componente AS ac ON ac.componente_id = c.id WHERE ac.automovel_id = {$auto_id}; "; 
+
 
             $query  = $this->conn->prepare($sql);
             $query->execute();
@@ -139,6 +167,46 @@
                 $query = $this->conn->prepare($sql_remove);
                 $query->execute();
             }
+        }
+        public function getByPlaca($placa)
+        {
+            $sql = "SELECT * FROM {$this->tableName} WHERE placa = '{$placa}'";
+            $data = $this->query($sql);
+            if ($data) 
+            {
+                $result = $this->modelName::create($data[0]);
+                return $result;
+            } else {
+                return null;
+            }
+        }
+
+        public function getPage($pageRequested, $itemsPerPage, $orderby = null)
+        {
+            $total_Items = $this->getTotalAmount();
+            $total_Pages = ($total_Items == 0 ? 0 : (int) ceil($total_Items/$itemsPerPage));
+
+            $pageToShow = $pageRequested <= $total_Pages ? $pageRequested : 0;
+
+            //TODO ASC/DESC CHOOSER
+            $limit = $itemsPerPage;
+            $offset = $pageRequested * $itemsPerPage;
+            $orderby = $orderby == null ? 'id' : $orderby;
+
+            $sql = "SELECT * FROM automovel ORDER BY {$orderby} ASC LIMIT :limit OFFSET :offset";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':limit', $limit);
+            $stmt->bindParam(':offset', $offset);
+            $stmt->execute();
+
+            $data = $stmt->fetchAll();
+
+            $result = [ 'totalitems' => $total_Items,
+                        'totalpages' => $total_Pages,
+                        'currentpage' => $pageToShow,
+                        'data' => $data];
+            
+            return $result;
         }
 
     }

@@ -56,11 +56,22 @@ class Controller {
      */
     public function error($args)
     {
+        header('Content-Type: application/json');
+
+        //ACEITANDO DefaultErrorResponse
+        if($args instanceof DefaultErrorResponse)
+            {
+                http_response_code($args->http_code());
+                echo json_encode($args);
+                die;
+            }
+
+
+        //ACEITANDO ARRAY COMO ARGUMENTO
         $responseCode = isset($args['response-code']) ? $args['response-code'] : 400;
         $errocode = isset($args['error-code']) ? $args['error-code'] : null;
         $msg = isset($args['msg']) ? $args['msg'] : null;
 
-        header('Content-Type: application/json');
         http_response_code($responseCode);
 
         $error_obj = new DefaultErrorResponse($args);

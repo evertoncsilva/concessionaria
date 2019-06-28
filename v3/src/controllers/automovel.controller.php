@@ -7,7 +7,8 @@ class AutomovelController extends Controller {
         'get' => [
             'all'                   => 'getAll',
             'paginated'             => 'getPaginated',
-            'get_componentes'       => 'get_componentes'
+            'get_componentes'       => 'get_componentes',
+            'getpage'              => 'getpage'
         ],
         'post' => [
             'delete_one'            => 'delete_one',
@@ -21,7 +22,6 @@ class AutomovelController extends Controller {
         $dto = new AutomoveisDTO();
         parent::__construct('automovel', $dto);
     }
-
     public function getAll($args)
     {
         if(!isset($args))
@@ -31,7 +31,6 @@ class AutomovelController extends Controller {
         $data = $this->DTO->getAll($args);
         $this->send($data);
     }
-
     public function getPaginated($args) 
     {
         $ar = $args;
@@ -54,13 +53,13 @@ class AutomovelController extends Controller {
 
         if($itens)  $this->send($itens);
     }
-
     public function index() 
     {
         renderIndex();
     }
     public function delete_one($args) 
     {
+        //TODO: deletar componentes do automóvel também
         $id = (isset($args['id'])) ? $args['id'] : null;
 
         if($id != null && is_numeric($id))
@@ -81,80 +80,51 @@ class AutomovelController extends Controller {
     }
     public function create($args)
     {
-        if(     !isset($args['placa']) 
-            ||  !isset($args['renavam']) 
-            ||  !isset($args['ano_modelo']) 
-            ||  !isset($args['ano_fabricacao']) 
-            ||  !isset($args['cor']) 
-            ||  !isset($args['km']) 
-            ||  !isset($args['marca_id']) 
-            ||  !isset($args['preco']) 
-            ||  !isset($args['preco_fipe']))  
-            {
+                $result = $this->DTO->create($args);
+                if($result instanceof DefaultErrorResponse)
+                    {
+                        return $this->error($result);
+                    }
+                else if($result === false)
+                    {
+                        return $this->error(['msg' => "Não foi possível criar novo automóvel"]);
+                    }
+                else if($result instanceof Automovel)
+                    {
+                        $componentes = $args['componentes_ids'] ?? array();
+                        if(is_array($componentes) && !empty($componentes))  //se há componentes a serem adicionados
+                            {
+                                $newlyCreated = $this->DTO->getByPlaca($result->placa);
+                                $this->DTO->compareAndUpdateComponentes($newlyCreated->id, $componentes);
+                            }
 
-                $error = [  'msg' => "Dados inválidos",
-                            //TODO: form errors
-                            'formErrors' => [],
-                            'response-code' => 400
-                ];
-                return $this->error($error);
-            }
-        // elseif (trim($args['nome']) === '')
-        //     {
-        //         $error = [  'msg' => "Dados inválidos",
-        //                     //TODO: form errors
-        //                     'formErrors' => [],
-        //                     'response-code' => 400
-        //         ];
-        //         return $this->error($error);
-        //     }
-        else 
-            {
-                $createArgs = array(
-                    'descricao'         => $args['descricao'] ?? null,
-                    'placa'             => $args['placa'], 
-                    'renavam'           => $args['renavam'], 
-                    'ano_modelo'        => $args['ano_modelo'], 
-                    'ano_fabricacao'    => $args['ano_fabricacao'], 
-                    'cor'               => $args['cor'], 
-                    'km'                => $args['km'], 
-                    'marca_id'          => $args['marca_id'], 
-                    'preco'             => $args['preco'], 
-                    'preco_fipe'        => $args['preco_fipe'], 
-                );
-
-                if($this->DTO->create($createArgs))
-                {
-                    return $this->success(['msg' => "Automovel criado com sucesso"]);
-                }
-                else
-                {
-                    return $this->error(['msg' => "Não foi possível criar novo automóvel"]);
-                }
-            }
+                        return $this->success(['msg' => "Automovel criado com sucesso"]);
+                    }
+            
     }
     public function update($args) 
     {
-            $automovel['id']              = $args['$id']             ?? null;
-            $automovel['descricao']       = $args['$descricao']      ?? null;
-            $automovel['placa']           = $args['$placa']          ?? null;
-            $automovel['renavam']         = $args['$renavam']        ?? null;
-            $automovel['ano_modelo']      = $args['$ano_modelo']     ?? null;
-            $automovel['ano_fabricacao']  = $args['$ano_fabricacao'] ?? null;
-            $automovel['cor']             = $args['$cor']            ?? null;
-            $automovel['km']              = $args['$km']             ?? null;
-            $automovel['marca_id']        = $args['$marca_id']       ?? null;
-            $automovel['preco']           = $args['$preco']          ?? null;
-            $automovel['preco_fipe']      = $args['$preco_fipe']     ?? null;
-            $automovel['nome_marca']      = $args['$nome_marca']     ?? null;
-            $automovel['componentes']     = $args['$componentes']    ?? null;
+            $result = $this->DTO->update($args);
 
-            $componentes = $args['componentes_ids'] ?? array();
+            if($result instanceof DefaultErrorResponse)
+                {
+                    return $this->error($result);
+                }
 
-            if($componentes !== null)
-                $this->DTO->compareAndUpdateComponentes($args['id'], $componentes);
+            else if($result === false)
+                {
+                    return $this->error(['msg' => "Não foi possível atualizar automóvel"]);
+                }
+            else if($result === true)
+                {
+                    $componentes = $args['componentes_ids'] ?? array();
 
-            $this->DTO->update($args);
+                    $this->DTO->compareAndUpdateComponentes($args['id'], $componentes);
+                    return $this->success(['msg' => "Editado com sucesso!"]);
+                }
+
+            //update dos componentes
+
             //valida_AndUpdate($automovel)
             //updateComponentes($args['id'], $componentes)
     }
@@ -197,17 +167,14 @@ class AutomovelController extends Controller {
             }
 
     }
-
-    private function valida_AndUpdate($args)
+    public function getpage($args)
     {
-        //TODO: VALIDA UPDATE
-        return true;
+        $page = $args['page'] ?? 0;
+        $itensPerPage = $args['itemsperpage'] ?? 10;
+        $orderby = $args['orderby'] ?? 'id';
+        $data = $this->DTO->getPage($page, $itensPerPage, $orderby);
+        $this->send($data);
     }
-    public function updateComponentes($automovel_id, $componentes)
-    {
-
-    }
-
 
 }
 ?>

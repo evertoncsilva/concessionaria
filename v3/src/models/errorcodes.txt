@@ -1,1 +1,2 @@
 1010 -> Erro na validação do automóvel
+1012 -> Registro duplicado na inserção do automóvel no banco

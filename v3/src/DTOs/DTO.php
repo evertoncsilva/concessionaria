@@ -220,7 +220,7 @@
         }
         public function delete_many($items)
         {
-            $itms = $items;
+            $items = array_filter($items);
             $ids = implode(",", $items);
             $sql = "DELETE FROM {$this->tableName} WHERE id IN({$ids})";
             $query = $this->conn->prepare($sql);

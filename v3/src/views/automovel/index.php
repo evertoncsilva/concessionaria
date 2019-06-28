@@ -37,16 +37,7 @@
     <div id="spinner" class="spinner"></div>
   </div>
     <div id="tablePaginator" class="pull-right">
-      <nav aria-label="...">
-        <ul class="pagination">
-          <li id="paginator-previous" class="page-item" onclick="onClick_PreviousPage()">
-            <a class="page-link" href="#" tabindex="-1">Anterior</a>
-          </li>
-          <li id="paginator-next" class="page-item" onclick="onClick_NextPage()">
-            <a class="page-link" href="#">Próximo</a>
-          </li>
-        </ul>
-      </nav>
+      
     </div>
 
 </div>
