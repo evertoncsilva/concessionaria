@@ -18,5 +18,12 @@
             Desselecionar
         </span>
       </div>
+      <div class="item <?= (isset($_SESSION['login']) && $_SESSION['login'] == true ? 'active' : 'diabled')?> clickable" id="sidebar-logoff" 
+      onclick="logout()">
+          <span  class="sidebar-link">
+            <i class="material-icons">exit_to_app</i>
+            Logout
+          </span>
+      </div>
   </div>
 </div>

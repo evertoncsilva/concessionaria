@@ -14,6 +14,7 @@ class Controller {
     public $activePage;
     public $templateStyles;
     protected $DTO;
+    protected $requireAuth = false;
 
     protected function __construct($name, DTO $DTO) 
     {
@@ -35,6 +36,16 @@ class Controller {
             $activePage = $this->activePage;
             $templateStyles = $this->templateStyles;
             require_once _VIEWS_ROOT.$this->templateFolder.'/index.php';
+            die;
+    }
+    public function renderLogin($msg = null, bool $isSuccess = false)
+    {
+            $pageTitle = "Login";
+            $activePage = "Login";
+            $templateStyles = "login";
+            $msg = $msg;
+            $success = $isSuccess;
+            require_once _VIEWS_ROOT.'login/index.php';
             die;
     }
 
@@ -102,39 +113,53 @@ class Controller {
         $req    = $_REQUEST;
         $post   = $_POST;
         $get    = $_GET;
+        session_start();
 
-        if(empty($req)) {
-            $this->renderIndex();
-        }
-        elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $keys = array_keys($get);
-            $route = $keys[0];
-            if($this->isValidRoute($route, 'get')) 
+        if($this->requireAuth && (!isset($_SESSION['login']) || $_SESSION['login'] == false))
             {
-                $routeMethod = $this->routes['get'][$route];
-                return $this->$routeMethod($req);
+                $this->renderLogin();
             }
-            else 
+        else
             {
-                $this->error(['response-code'=> 404, 'msg' => 'Route not found']);
+                if(empty($req)) {
+                    $this->renderIndex();
+                }
+                elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                    $keys = array_keys($get);
+                    $route = $keys[0];
+                    if($this->isValidRoute($route, 'get')) 
+                    {
+                        $routeMethod = $this->routes['get'][$route];
+                        return $this->$routeMethod($req);
+                    }
+                    else 
+                    {
+                        $this->error(['response-code'=> 404, 'msg' => 'Route not found']);
+                    }
+                }
+                elseif($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $keys = array_keys($post);
+                    $route = (isset($post['action'])) ? $post['action'] : '';
+                    if($this->isValidRoute($route, 'post'))
+                    {
+                        $routeMethod = $this->routes['post'][$route];
+                        return $this->$routeMethod($post);
+                    } 
+                    else 
+                    {
+                        $this->error(['response-code'=> 404, 'msg' => 'Route not found']);
+                    }
+                }
             }
-        }
-        elseif($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $keys = array_keys($post);
-            $route = (isset($post['action'])) ? $post['action'] : '';
-            if($this->isValidRoute($route, 'post'))
-            {
-                $routeMethod = $this->routes['post'][$route];
-                return $this->$routeMethod($post);
-            } 
-            else 
-            {
-                $this->error(['response-code'=> 404, 'msg' => 'Route not found']);
-            }
-        }
+        
 
         // TODO: render 404
 
+    }
+
+    protected function setRequireAuth(bool $option)
+    {
+        $this->requireAuth = $option;
     }
 }
 

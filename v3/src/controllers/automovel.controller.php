@@ -21,6 +21,8 @@ class AutomovelController extends Controller {
     {
         $dto = new AutomoveisDTO();
         parent::__construct('automovel', $dto);
+        $this->pageTitle = "Automóveis";
+        $this->requireAuth = true;
     }
     public function getAll($args)
     {
@@ -170,7 +172,7 @@ class AutomovelController extends Controller {
     public function getpage($args)
     {
         $page = $args['page'] ?? 0;
-        $itensPerPage = $args['itemsperpage'] ?? 10;
+        $itensPerPage = $args['itemsperpage'] ?? 3;
         $orderby = $args['orderby'] ?? 'id';
         $filter = $args['filter'] ?? null;
         $data = $this->DTO->getPage($page, $itensPerPage, $orderby, $filter);

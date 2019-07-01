@@ -17,14 +17,13 @@ const tablePanel        = $('#table-panel');
 const targetTable       = $('#tableContent');
 const checkboxAll       = $('#checkbox-select-all');
 
-
 window.addEventListener("load", _initialize, true);
 
-function clearFilter()
+function onClick_clearFilter()
 {
     filtertext = '';
     $('#filtertext').val('');
-    $('#btn-clearfilter').removeClass("noshow");
+    $('#btn-clearfilter').addClass("noshow");
     ajax_getPage();
 }
 function render_Pagination()
@@ -43,7 +42,7 @@ function render_Pagination()
             template_linksbefore = `<li class="page-item"><a class="page-link" onclick="gotoPage(${i})">${i+1}</a></li>` + template_linksbefore;
             renderedBefore++;
         }
-    //calcular quantidade de links antes da página atual ativa:
+    //calcular quantidade de links depois da página atual ativa:
         for(let i = linkActive +1; i < totalPagesCount && renderedAfter < maxLinksafter ; i++)
         {
             template_linksafter += `<li class="page-item"><a class="page-link" onclick="gotoPage(${i})">${i+1}</a></li>`;
@@ -56,7 +55,7 @@ function render_Pagination()
                                 ${template_linksbefore}
                             <li class="page-item active"><a class="page-link">${linkActive +1}</a></li>
                                 ${template_linksafter}
-                            <li class="page-item ${linkActive +1 <= totalPagesCount ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive + 1 <= totalPagesCount ? (linkActive + 1) : 0})">Próximo</a></li>
+                            <li class="page-item ${linkActive +2 <= totalPagesCount ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive + 1 <= totalPagesCount ? (linkActive + 1) : 0})">Próximo</a></li>
                             </ul>
                         </nav>`
     tablePaginator.html(template);
@@ -100,11 +99,19 @@ function _initialize()
 
     $('#filtertext').keyup(function(){
         filtertext = this.value;
-        if(this.value != '')
+        if(this.value != '') {
             $('#btn-clearfilter').removeClass("noshow");
+        }
         else {
             $('#btn-clearfilter').addClass("noshow");
             ajax_getPage();
+        }
+    });
+    $('#filtertext').keypress(function(e) {
+        if(e.which == 13) {
+            if($('#filtertext').val != '') {
+                ajax_getPage();
+            }
         }
     });
 }
@@ -222,7 +229,7 @@ function ajax_EditAutomovel(id)
     $.post("/v3/automoveis.php", data, function (result) {
         render_AlertSuccess("Automóvel editado com sucesso!");
         remove_EditorForm();
-        ajax_GetAutomoveis('reload');
+        ajax_getPage();
     })
     .fail(function(error) {
         err = error.responseJSON != undefined ? error.responseJSON : new Object();
@@ -255,7 +262,7 @@ function ajax_DeleteManyAutomoveis(comps)
         render_AlertError("Não foi possível executar a operação ["+error.message+"| cód: "+error.code+"]");
     })
     .always(function() {
-        ajax_GetAutomoveis('reload');
+        ajax_getPage();
     })
 }
 function render_Page(data) 
@@ -288,6 +295,7 @@ function render_CreateForm()
     if($('#editor-form-wrapper').length) return;
     toggle_TablePanel(false);
     mainContainer.append(template_GenerateEditorForm());
+    set_FormMasks();
     
 }
 function render_EditForm(id)
@@ -297,6 +305,7 @@ function render_EditForm(id)
     let item = allAutomoveis.filter(x => x.id == id);
     mainContainer.append(template_GenerateEditorForm(true, item));
     ajax_GetMarcas_ThenPopulateEditorForm(item);
+    set_FormMasks();
 }
 function onClick_NextPage()
 {
@@ -326,7 +335,14 @@ function onClick_ExcluirVarios()
         }
     else 
         {
-            ajax_DeleteManyAutomoveis(selected);
+            let confirma = confirm("Tem certeza que deseja excluir estes itens?");
+            if(confirma) ajax_DeleteManyAutomoveis(selected);
+            else {
+                render_AlertSuccess("Exclusão cancelada");
+                $.each($('.item-checkbox:checked'), function() {
+                    $(this).prop('checked', false);
+                });
+            }
         }
 }
 function onClick_MenuAdicionar()
@@ -341,14 +357,20 @@ function remove_EditorForm()
 }
 function template_GenerateTableItem(item) 
 {
+    let precofloat = parseFloat(item.preco);
+    let kmFormatado = item.km.toLocaleString('br');
+    let precoFormatado =  precofloat.toLocaleString('br', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+    let placaFormatada = item.placa.toUpperCase();
+    placaFormatada = placaFormatada.slice(0,3) + "-" + placaFormatada.slice(3);
     return `<tr>
     <td class="td-select"><input type="checkbox" value="${item.id}" class="item-checkbox"></td>
-    <td>${item.id}</td>
-    <td>${item.descricao}</td>
-    <td>${item.preco}</td>
-    <td>${item.ano_fabricacao}/${item.ano_modelo}</td>
-    <td>${item.km}</td>
-    <td>${item.nome_marca}</td>
+    <td class="clickable" onclick="onClick_EditAutomovel(${item.id})">${item.id}</td>
+    <td class="clickable" onclick="onClick_EditAutomovel(${item.id})">${item.descricao}</td>
+    <td class="clickable" onclick="onClick_EditAutomovel(${item.id})">R$ ${precoFormatado}</td>
+    <td class="clickable" onclick="onClick_EditAutomovel(${item.id})">${item.ano_fabricacao}/${item.ano_modelo}</td>
+    <td class="clickable" onclick="onClick_EditAutomovel(${item.id})">${kmFormatado}</td>
+    <td class="clickable" onclick="onClick_EditAutomovel(${item.id})">${placaFormatada}</td>
+    <td class="clickable" onclick="onClick_EditAutomovel(${item.id})">${item.nome_marca}</td>
     <td>
         <i class="material-icons clickable" onclick="onClick_EditAutomovel(${item.id})">edit</i>
         <i class="material-icons clickable" onclick="onClick_DeleteAutomovel(${item.id})">delete</i>
@@ -372,7 +394,7 @@ function template_AlertErro(message)
 }
 function template_GenerateEditorForm(isEditar, data)
 {
-    let item                = data && data[0]       || undefined;
+    let item                = data && data[0]               || undefined;
     let id                  = item && item.id               || '';
     let descricao           = item && item.descricao        || '';
     let placa               = item && item.placa            || '';
@@ -483,8 +505,8 @@ function template_GenerateEditorForm(isEditar, data)
                   </div>
                 </div>
                 <!-- ENDROW -->
-                <h4>Componentes adicionais</h4>
                 <hr>
+                <h4>Componentes adicionais:</h4>
                 <div id="componentes-area">
                 <!-- COMPONENTES CHECKBOXES -->
 
@@ -537,7 +559,8 @@ function ajax_DeleteMarca(id)
 }
 function onClick_DeleteAutomovel(id) 
 {
-    ajax_DeleteMarca(id);
+    let confirma = confirm("Tem certeza que deseja excluir este item?");
+    if(confirma) ajax_DeleteMarca(id);
 }
 function update_reloadTable()
 {
@@ -710,4 +733,12 @@ function render_InvalidFormFeedback(item)
     let feedback_div = `<div class="invalid-feedback">${item.msg}</div>`;
     $('#editor-form-'+nomecampo).toggleClass('is-invalid', true);
     $(feedback_div).insertAfter('#editor-form-'+nomecampo);
+}
+function set_FormMasks()
+{
+    $('#editor-form-placa').mask('AAA-0000');
+    $('#editor-form-renavam').mask('00000000000');
+    $('#editor-form-preco').mask('000.000,00', {reverse: true});
+    $('#editor-form-preco_fipe').mask('000.000,00', {reverse: true});
+    $('#editor-form-km').mask('000.000', {reverse: true});
 }

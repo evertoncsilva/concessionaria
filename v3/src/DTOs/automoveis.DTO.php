@@ -180,10 +180,9 @@
                 return null;
             }
         }
-
         public function getPage($pageRequested, $itemsPerPage, $orderby = null, $filter = null)
         {
-            $total_Items = $this->getTotalAmount();
+            $total_Items = $this->getTotalCountFiltered($filter);
             $total_Pages = ($total_Items == 0 ? 0 : (int) ceil($total_Items/$itemsPerPage));
 
             $pageToShow = $pageRequested <= $total_Pages ? $pageRequested : 0;
@@ -193,7 +192,7 @@
             $offset = $pageRequested * $itemsPerPage;
             $orderby = $orderby == null ? 'id' : $orderby;
 
-            $sql = "SELECT * FROM automovel ORDER BY {$orderby} ASC LIMIT :limit OFFSET :offset";
+            $sql = "SELECT automovel.*, marca.nome AS nome_marca FROM automovel  LEFT JOIN marca  ON marca.id = automovel.marca_id ORDER BY automovel.{$orderby} ASC LIMIT :limit OFFSET :offset";
             if($filter != null )
                 $sql =  "SELECT a.*, m.nome AS nome_marca FROM automovel AS a LEFT JOIN marca AS m ON m.id = a.marca_id"
                         ." WHERE a.descricao LIKE '%{$filter}%'"
@@ -211,6 +210,18 @@
                         'currentpage' => $pageToShow,
                         'data' => $data];
             
+            return $result;
+        }
+        private function getTotalCountFiltered($filter = null)
+        {
+            if($filter == null ) return $this->getTotalAmount();
+
+            $sql = $sql =   "SELECT COUNT(*) AS count FROM automovel AS a INNER JOIN marca AS m ON m.id = a.marca_id"
+                            ." WHERE a.descricao LIKE '%{$filter}%'"
+                            ." OR m.nome LIKE '%{$filter}%'; ";
+                    $data = $this->query($sql);
+                    $result = $data[0]['count'];
+                    
             return $result;
         }
 

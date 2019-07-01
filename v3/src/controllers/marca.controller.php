@@ -19,6 +19,7 @@ class MarcaController extends Controller {
     {
         $dto = new MarcasDTO();
         parent::__construct('marca', $dto);
+        $this->requireAuth = true;
     }
 
     public function getAll($args)

@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^apache-redirect-http-to-https\.html$ https://localhost/v3 [R=301,L]

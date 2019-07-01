@@ -23,7 +23,7 @@
     <!-- View Styles -->
     <link rel="stylesheet" href="public/styles/<?= $templateStyles ?>.css">
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" href="favicon.ico">
     <title><?php echo $pageTitle ?></title>
 </head>
 

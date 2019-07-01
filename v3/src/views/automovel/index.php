@@ -10,14 +10,14 @@
     <div class="card-header">
       <div class="row">
         <div class="col-md-9">
-          <h3 class="panel-title" class="col-md-6">Componentes</h3>
+          <h3 class="panel-title" class="col-md-6">Automóveis</h3>
         </div>
         <div class="col-md-2" id="col-filtertext">
           <input class="form-control" id="filtertext" type="text" name="filter" placeholder="Filtrar...">
         </div>
         <div class="col-md-1" id="col-filterbutton">
           <span class="btn btn-outline-info filterbutton"><i class="material-icons" onclick="ajax_getPage()">search</i></span>
-          <span class="btn btn-outline-danger filterbutton noshow" id="btn-clearfilter"><i class="material-icons" onclick="clearFilter()">clear</i></span>
+          <span class="btn btn-outline-danger filterbutton noshow" id="btn-clearfilter"><i class="material-icons" onclick="onClick_clearFilter()">clear</i></span>
         </div>
       </div>
     </div>
@@ -30,12 +30,12 @@
           <th class="thead-preco">  Preco</th>
           <th class="thead-ano">    Ano fab/modelo</th>
           <th class="thead-km">     Km</th>
+          <th class="thead-marca">  Placa</th>
           <th class="thead-marca">  Marca</th>
           <th class="thead-option"> Opções</th>
         </tr>
       </thead>
       <tbody id="tableContent">
-
       </tbody>
     </table>
     <div id="spinner" class="spinner"></div>

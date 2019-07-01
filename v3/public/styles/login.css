@@ -1,0 +1,14 @@
+#alert {
+    top:0;
+}
+
+.container {
+    max-width: 350px;
+  }
+
+  #logreg-forms {
+    margin-top: 50px;
+  }
+  .form-signin input, .form-signin button, .form-signup input, .form-signup button{
+    margin: 5px;
+  }

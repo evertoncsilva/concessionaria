@@ -19,6 +19,7 @@ class ComponenteController extends Controller {
     {
         $dto = new ComponentesDTO();
         parent::__construct('componente', $dto);
+        $this->requireAuth = true;
     }
 
     public function getAll($args)

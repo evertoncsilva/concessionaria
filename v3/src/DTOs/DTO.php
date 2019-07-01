@@ -1,7 +1,9 @@
 <?php
     require_once __DIR__.'/../../util/config.php';
     require_once 'database.connector.php';
-    require_once __DIR__.'/../models/componente.model.php'; 
+    require_once __DIR__.'/../models/componente.model.php';
+    require_once __DIR__.'/../models/default-error-response.model.php';
+    require_once __DIR__.'/../models/default-success-response.model.php';
     /**
      * Classe Model
      */
@@ -21,7 +23,7 @@
         {
             parent::__construct();
             $this->tableName = $tableName;
-            $this->modelName = $modelName;
+            $this->modelName = $modelName ?? null;
         }
         protected function setPrimaryKey($key) {
             $this->primaryKey = $key;
@@ -54,7 +56,6 @@
             $sql = "SELECT COUNT(*) as count FROM {$this->tableName}";
             $data = $this->query($sql);
             $result = $data[0]['count'];
-
             return $result;
         }
         public function getRangeById($startRange, $endRange) : ?array
@@ -115,7 +116,6 @@
                 return null;
             }
         }
-
         public function getPreviousPage($lastItem, $pageSize, $orderBy)
         {
             $endSQL = (isset($lastItem)) ? "WHERE {$orderBy} < {$lastItem}" : "";
@@ -156,7 +156,6 @@
 
 
         }
-
         public function getById($id): Model
         {
             $sql = "SELECT * FROM {$this->tableName} WHERE id = {$id}";
@@ -195,7 +194,6 @@
             }
 
         }
-
         public function isColumnNameValid($nomeColuna) : bool
         {
             $model = $this->modelName::createEmpty();

@@ -11,3 +11,8 @@ function getVal_ByID(id)
 {
     return document.getElementById(id).value;
 }
+
+function logout()
+{
+    window.location.href = "http://localhost/v3/login.php?logout";
+}

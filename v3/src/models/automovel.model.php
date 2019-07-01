@@ -100,9 +100,10 @@ class Automovel extends Model {
                 $this->validationStatus = false;
                 return $errors->addFormError(['campo' => 'placa','msg' => 'Placa inválida']);
             }
-        $this->placa = str_replace('-','',$placa);
+        $placa = str_replace('-','',$placa);
+        $placa = strtoupper($placa);
+        $this->placa = $placa;
     }
-
     public function validaRenavam($renavam, &$errors) 
     {
         $teste = (strlen($renavam));
@@ -127,7 +128,6 @@ class Automovel extends Model {
                 return $errors->addFormError(['campo' => 'renavam', 'msg' => 'Máximo de 11 dígitos']);
             }
     }
-
     public function validaAnoModelo($ano, &$errors)
     {
         if($ano === null)
@@ -209,6 +209,8 @@ class Automovel extends Model {
     }
     public function validaKm($km, &$errors)
     {
+        $km = str_replace('.','', $km);
+            $this->km = $km;
         if($km < 0)
             {
                 $this->validationStatus = false;
@@ -245,6 +247,7 @@ class Automovel extends Model {
                 $this->validationStatus = false;
                 return $errors->addFormError(['campo' => 'preco', 'msg' => 'Preço obrigatório!']);
             }   
+        $preco = str_replace('.','', $preco);
         $preco = str_replace(',','.', $preco);  // substitui virgulas por pontos
             $this->preco = $preco;
         if(!is_numeric($preco))
@@ -266,8 +269,9 @@ class Automovel extends Model {
                 $this->validationStatus = false;
                 return $errors->addFormError(['campo' => 'preco_fipe', 'msg' => 'Preço obrigatório!']);
             }   
+        $preco = str_replace('.','', $preco);
         $preco = str_replace(',','.', $preco);  // substitui virgulas por pontos
-            $this->preco = $preco;
+            $this->preco_fipe = $preco;
         if(!is_numeric($preco))
                  if(!is_numeric($preco))
             {
