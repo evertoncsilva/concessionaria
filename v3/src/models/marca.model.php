@@ -7,42 +7,38 @@ class Marca extends Model {
     public $nome = null;
     public $descricao = null;
 
-    private function __construct() 
-    {
+    private function __construct() {
         parent::__construct();
     }
-    public function getTableProperties() : array 
-    {
+    public function getTableProperties() : array {
         return ['nome', 'descricao'];
     }
-    public static function create(array $data) : Marca
-    {
-
+    public static function create(array $data) : Marca {
         $instance = new Marca();
         foreach ($data as $key => $value) {
-            if (property_exists($instance, $key))
-            {
+            if (property_exists($instance, $key)){
                 $instance->{$key} = $value;
             }
         }
         return $instance;
     }
-    public static function createEmpty() 
-    {
+    public static function createEmpty() {
         $instance = new Marca();
         return $instance;
     }
-    public static function validateAndCreate($args) 
-    {
+    public static function validateAndCreate($args) {
         $invalid = array();
 
-        if      (!isset($args['nome'])) array_push($invalid, 'nome');
-        elseif  (!isset($args['descricao'])) array_push($invalid, 'descricao');
+        if (!isset($args['nome'])) {
+            array_push($invalid, 'nome');
+        } 
+        elseif (!isset($args['descricao'])) {
+            array_push($invalid, 'descricao');
+        } 
         else {
             return static::create($args);
         }
         return null;
-
     }
 }
 ?>

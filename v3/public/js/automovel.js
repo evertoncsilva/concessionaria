@@ -1,21 +1,21 @@
-let original_allAutomoveis = null;
-let activePageName      = 'automoveis';
-let allAutomoveis       = [];
-let pageSize            = 10;
-let activePageNumber    = 0;
-let automoveisCount     = 0;
-let totalPagesCount     = 0;
-let lastPageNumber      = 0;
-let lastAlertId         = 0;
-let mainContainer       = $("#main-container");
-let componentes         = null;
-let auto_componentes_ids = null;
-let filtertext          = '';
-const editorForm        = $('#editor-form');
-const tablePaginator    = $('#tablePaginator');
-const tablePanel        = $('#table-panel');
-const targetTable       = $('#tableContent');
-const checkboxAll       = $('#checkbox-select-all');
+let originalAllAutomoveis  = null;
+let activePageName          = 'automoveis';
+let allAutomoveis           = [];
+let pageSize                = 10;
+let activePageNumber        = 0;
+let automoveisCount         = 0;
+let totalPagesCount         = 0;
+let lastPageNumber          = 0;
+let lastAlertId             = 0;
+let mainContainer           = $("#main-container");
+let componentes             = null;
+let autoComponentesIds    = null;
+let filtertext              = '';
+const editorForm            = $('#editor-form');
+const tablePaginator        = $('#tablePaginator');
+const tablePanel            = $('#table-panel');
+const targetTable           = $('#tableContent');
+const checkboxAll           = $('#checkbox-select-all');
 
 window.addEventListener("load", _initialize, true);
 
@@ -28,8 +28,8 @@ function onClick_clearFilter()
 }
 function render_Pagination()
 {
-    let maxLinksbefore = 3;
-    let maxLinksafter = 3;
+    let maxLinksbefore = 99999;
+    let maxLinksafter = 9999;
     
     let linkActive = activePageNumber;
     let template_linksbefore = "";
@@ -133,7 +133,7 @@ function ajax_GetAutomoveis(page)
                 render_AlertError("Nenhum automóvel encontrado!");
             }
             allAutomoveis = result || [];
-            original_allAutomoveis = result;
+            originalAllAutomoveis = result;
             automoveisCount = allAutomoveis.length;
             totalPagesCount = Math.ceil(automoveisCount / pageSize);
             lastPageNumber = (totalPagesCount > 1) ? (totalPagesCount -1) : 0;
@@ -394,18 +394,18 @@ function template_AlertErro(message)
 }
 function template_GenerateEditorForm(isEditar, data)
 {
-    let item                = data && data[0]               || undefined;
-    let id                  = item && item.id               || '';
-    let descricao           = item && item.descricao        || '';
-    let placa               = item && item.placa            || '';
-    let renavam             = item && item.renavam          || '';
-    let ano_modelo          = item && item.ano_modelo       || '';
-    let ano_fabricacao      = item && item.ano_fabricacao   || '';
-    let cor                 = item && item.cor              || '';
-    let km                  = item && item.km               || '';
-    let marca_id            = item && item.marca_id         || '';
-    let preco               = item && item.preco            || '';
-    let preco_fipe          = item && item.preco_fipe       || '';
+    let ano_fabricacao = item && item.ano_fabricacao || '';
+    let ano_modelo = item && item.ano_modelo || '';
+    let preco_fipe = item && item.preco_fipe || '';
+    let descricao = item && item.descricao || '';
+    let marca_id = item && item.marca_id || '';
+    let renavam = item && item.renavam || '';
+    let item = data && data[0] || undefined;
+    let placa = item && item.placa || '';
+    let preco = item && item.preco || '';
+    let cor = item && item.cor || '';
+    let id = item && item.id || '';
+    let km = item && item.km || '';
     let editar = isEditar || false;
 
     let method = editar ? "ajax_EditAutomovel("+id+")" : "ajax_CreateAutomovel()" ;
@@ -692,8 +692,8 @@ function ajax_getThen_Populate_AutomovelComponentesId(id)
         cache: false,
         url: "/v3/automoveis.php?get_componentes&id=" + id,
         success: function(result) {
-            auto_componentes_ids = result;
-            populate_CrossReferenceAutomovelComponente(auto_componentes_ids, componentes);
+            autoComponentesIds = result;
+            populate_CrossReferenceAutomovelComponente(autoComponentesIds, componentes);
         }
     });
 

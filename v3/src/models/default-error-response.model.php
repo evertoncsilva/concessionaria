@@ -9,23 +9,24 @@ class DefaultErrorResponse {
 
     public function __construct($args = null, PDOStatement $pdo = null) {
 
-        if($args != null && !empty($args))   // arguemntos passados via array
-            {
-                $this->message = (isset($args['msg'])) ? $args['msg'] : "Internal error";
-                $this->code = (isset($args['error-code'])) ? $args['error-code'] : 1;
-                $this->code = $args['code'] ?? 1;
+        if ($args != null && !empty($args)) { // argumentos passados via array
+            $this->message = (isset($args['msg'])) ? $args['msg'] : "Internal error";
+            $this->code = (isset($args['error-code'])) ? $args['error-code'] : 1;
+            $this->code = $args['code'] ?? 1;
 
-                if(isset($args['info'])) { $this->info = $args['info']; }
-                if(isset($args['formErrors'])) { $this->formErrors = $args['formErrors']; }
+            if(isset($args['info'])) { 
+                $this->info = $args['info']; 
             }
-        else if($pdo != null)
-            {
-                $this->errorFromPDOStatement($pdo);
+            if(isset($args['formErrors'])) { 
+                $this->formErrors = $args['formErrors']; 
             }
-        else 
-            {
-                throw new Exception("Argumentos inválido no construtor do DefaultErrorResponse"); 
-            }
+        }
+        else if($pdo != null) {
+            $this->errorFromPDOStatement($pdo);
+        }
+        else {
+            throw new Exception("Argumentos inválido no construtor do DefaultErrorResponse"); 
+        }
         
     }
 
@@ -41,30 +42,19 @@ class DefaultErrorResponse {
         array_push($this->formErrors, $error);
     }
 
-    public function http_code($code = null) {
-        if($code === null) return $this->http_response_code;
+    public function httpCode($code = null) {
+        if ($code === null) {
+            return $this->http_response_code;
+        } 
 
-        else 
-            {
-                if(is_numeric($code))
-                    $this->http_response_code = $code;
-                else throw new Exception("DefaultErrorResponse: código de erro http deve ser numérico!");
+        else {
+            if (is_numeric($code)) {
+                $this->http_response_code = $code;
             }
+            else {
+                throw new Exception("DefaultErrorResponse: código de erro http deve ser numérico!");
+            } 
+        }
     }
-
-    // private function errorFromPDOStatement(PDOStatement $pdoStmt)
-    //     {
-    //         $errInfo = $pdoStmt->errorInfo();
-            
-    //         if($errInfo[1] == 1062) // Registro duplicado
-    //             {
-    //                 $re = '/(?<=Duplicate entry \')([a-z]+)/mi';
-    //                 preg_match($re, $errInfo[2], $match);
-    //                 $teste = $match;
-    //                 $this->message = "Registros duplicados para '"+ucfirst($match[0])+"'";
-    //             }
-    //     }
-
 }
-
 ?>

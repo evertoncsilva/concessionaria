@@ -26,13 +26,13 @@
         <tr>
           <th class="thead-select"><input id="checkbox-select-all" onclick="toggle_SelectAll()" type="checkbox"></th>
           <th class="thead-id" id="testeclick">#</th>
-          <th class="thead-placa">  Descrição</th>
-          <th class="thead-preco">  Preco</th>
-          <th class="thead-ano">    Ano fab/modelo</th>
-          <th class="thead-km">     Km</th>
-          <th class="thead-marca">  Placa</th>
-          <th class="thead-marca">  Marca</th>
-          <th class="thead-option"> Opções</th>
+          <th class="thead-placa">Descrição</th>
+          <th class="thead-preco">Preco</th>
+          <th class="thead-ano">Ano fab/modelo</th>
+          <th class="thead-km">Km</th>
+          <th class="thead-marca">Placa</th>
+          <th class="thead-marca">Marca</th>
+          <th class="thead-option">Opções</th>
         </tr>
       </thead>
       <tbody id="tableContent">

@@ -5,10 +5,10 @@ require_once __DIR__.'/../models/default-error-response.model.php';
 require_once __DIR__.'/../models/default-success-response.model.php';
 
 class Controller {
-    private     $templateFolder;
-    private     $baseTemplate;
-    private     $modelName;
-    public      $routes;
+    protected $templateFolder;
+    protected $baseTemplate;
+    protected $modelName;
+    public $routes;
 
     public $pageTitle;
     public $activePage;
@@ -16,8 +16,7 @@ class Controller {
     protected $DTO;
     protected $requireAuth = false;
 
-    protected function __construct($name, DTO $DTO) 
-    {
+    protected function __construct($name, DTO $DTO) {
         $nameLowerCase = strtolower($name);
         $nameUcFirst = ucfirst($nameLowerCase);
 
@@ -29,17 +28,14 @@ class Controller {
         $this->templateStyles   = $nameLowerCase;
         $this->DTO              = $DTO;
     }
-
-    public function renderIndex() 
-    {
+    public function renderIndex() {
             $pageTitle = $this->pageTitle;
             $activePage = $this->activePage;
             $templateStyles = $this->templateStyles;
             require_once _VIEWS_ROOT.$this->templateFolder.'/index.php';
             die;
     }
-    public function renderLogin($msg = null, bool $isSuccess = false)
-    {
+    public function renderLogin($msg = null, bool $isSuccess = false) {
             $pageTitle = "Login";
             $activePage = "Login";
             $templateStyles = "login";
@@ -65,19 +61,15 @@ class Controller {
      *              ]
      * @return void
      */
-    public function error($args)
-    {
+    public function error($args) {
         header('Content-Type: application/json');
 
         //ACEITANDO DefaultErrorResponse
-        if($args instanceof DefaultErrorResponse)
-            {
+        if ($args instanceof DefaultErrorResponse) {
                 http_response_code($args->http_code());
                 echo json_encode($args);
                 die;
             }
-
-
         //ACEITANDO ARRAY COMO ARGUMENTO
         $responseCode = isset($args['response-code']) ? $args['response-code'] : 400;
         $errocode = isset($args['error-code']) ? $args['error-code'] : null;
@@ -96,69 +88,55 @@ class Controller {
         $this->send(new DefaultSuccesResponse($args));
     }
 
-    protected function isValidRoute($route, $type)
-    {
+    protected function isValidRoute($route, $type) {
         if (isset($this->routes[$type])) {
-
             if (array_key_exists($route, $this->routes[$type])) {
                 return true;
             }
         }
-
         return false;
     }
     
-    public function request()
-    {
+    public function request() {
         $req    = $_REQUEST;
         $post   = $_POST;
         $get    = $_GET;
         session_start();
 
-        if($this->requireAuth && (!isset($_SESSION['login']) || $_SESSION['login'] == false))
-            {
+        if ($this->requireAuth && (!isset($_SESSION['login']) || $_SESSION['login'] == false)) {
                 $this->renderLogin();
-            }
-        else
-            {
-                if(empty($req)) {
+        }
+        else {
+                if (empty($req)) {
                     $this->renderIndex();
                 }
                 elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $keys = array_keys($get);
                     $route = $keys[0];
-                    if($this->isValidRoute($route, 'get')) 
-                    {
+                    if ($this->isValidRoute($route, 'get')) {
                         $routeMethod = $this->routes['get'][$route];
                         return $this->$routeMethod($req);
                     }
-                    else 
-                    {
+                    else {
                         $this->error(['response-code'=> 404, 'msg' => 'Route not found']);
                     }
                 }
-                elseif($_SERVER['REQUEST_METHOD'] === 'POST') {
+                elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $keys = array_keys($post);
                     $route = (isset($post['action'])) ? $post['action'] : '';
-                    if($this->isValidRoute($route, 'post'))
-                    {
+                    if ($this->isValidRoute($route, 'post')) {
                         $routeMethod = $this->routes['post'][$route];
                         return $this->$routeMethod($post);
                     } 
-                    else 
-                    {
+                    else  {
                         $this->error(['response-code'=> 404, 'msg' => 'Route not found']);
                     }
                 }
-            }
-        
-
+        }
         // TODO: render 404
-
     }
 
-    protected function setRequireAuth(bool $option)
-    {
+    protected function setRequireAuth(bool $option) {
         $this->requireAuth = $option;
     }
 }
