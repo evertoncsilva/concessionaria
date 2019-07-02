@@ -66,7 +66,7 @@ class Controller {
 
         //ACEITANDO DefaultErrorResponse
         if ($args instanceof DefaultErrorResponse) {
-                http_response_code($args->http_code());
+                http_response_code($args->httpCode());
                 echo json_encode($args);
                 die;
             }

@@ -9,7 +9,8 @@ class AutomovelController extends Controller {
             'paginated' => 'getPaginated',
             'getpage' => 'getpage',
             'all' => 'getAll',
-            'relatorio' => 'relatorioForm'
+            'relatorio' => 'relatorioForm',
+            'gerarelatorio' => 'geraRelatorio'
         ],
         'post' => [
             'delete_many' => 'deleteMany',
@@ -156,6 +157,81 @@ class AutomovelController extends Controller {
         $templateStyles = $this->templateStyles;
         require_once _VIEWS_ROOT.$this->templateFolder.'/automoveis.relatorio.form.php';
         die;
+    }
+    public function geraRelatorio($args) {
+            /**
+             * orderby:
+             *      id
+             *      data add
+             *      data edit
+             *      preco
+             *      placa
+             * order:
+             *      asc
+             *      desc
+             * filterby:
+             *      descricao
+             *      nome_marca
+             * filterby_value: texto filtro
+             */
+        $orderby = $this->relatorioValidaOrderby($args['orderby'] ?? 'id');
+        $order = $this->relatorioValidaOrder($args['order'] ?? 'asc');
+        $filterby = $this->relatorioValidaFilterby($args['filterby'] ?? 'descricao');
+        $filtro = $this->relatorioValidaFilterbyValue($args['filterby_value']);
+        
+        $sql = "SELECT a.*, m.nome AS nome_marca FROM automovel AS a JOIN marca AS m ON m.id = a.marca_id WHERE {$filterby} LIKE :filter ORDER BY {$orderby} {$order}; ";
+        $stmt = $this->DTO->conn->prepare($sql);
+        $stmt->bindValue(':filter', "%".$filtro."%");
+        $stmt->execute();
+
+        $queryResult = $stmt->fetchAll();
+
+        $pageTitle = $this->pageTitle;
+        $activePage = $this->activePage;
+        $templateStyles = $this->templateStyles;
+        require_once _VIEWS_ROOT.$this->templateFolder.'/automoveis.relatorio.form.php';
+        die;
+
+    }
+    private function relatorioValidaOrderby($orderby = 'id') {
+        switch($orderby) {
+            case 'id':
+                return 'a.id';
+            case 'data_add';
+                return 'a.data_add';
+            case 'data_edit':
+                return 'a.data_edit';
+            case 'preco':
+                return 'a.preco';
+            case 'placa':
+                return 'a.placa';
+            default:
+                return 'a.descricao';
+
+        }
+    } 
+    private function relatorioValidaOrder($order = 'asc') {
+        switch($order) {
+            case 'asc':
+                return 'asc';
+            case 'desc':
+                return 'desc';
+            default:
+                return 'asc';
+        }
+    }
+    private function relatorioValidaFilterby($filterby = 'descricao') {
+        switch($filterby) {
+            case 'descricao':
+                return 'a.descricao';
+            case 'nome_marca':
+                return 'm.nome';
+            default:
+                return 'a.descricao';
+        }
+    }
+    private function relatorioValidaFilterbyValue($filtro = '') {
+        return $filtro;
     }
 }
 ?>

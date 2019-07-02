@@ -9,15 +9,18 @@
   <div id="table-panel" class="card">
     <div class="card-header">
       <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-7">
           <h3 class="panel-title" class="col-md-6">Automóveis</h3>
+        </div>
+        <div class="col-md-2">
+          <a href="automoveis.php?relatorio" class="btn btn-outline-secondary" id="btn-relatorios">Relatórios <i class="material-icons" id="icon-relatorio">assignment</i></a>
         </div>
         <div class="col-md-2" id="col-filtertext">
           <input class="form-control" id="filtertext" type="text" name="filter" placeholder="Filtrar...">
         </div>
         <div class="col-md-1" id="col-filterbutton">
           <span class="btn btn-outline-info filterbutton"><i class="material-icons" onclick="ajax_getPage()">search</i></span>
-          <span class="btn btn-outline-danger filterbutton noshow" id="btn-clearfilter"><i class="material-icons" onclick="onClick_clearFilter()">clear</i></span>
+          <span class="btn btn-outline-danger filterbutton noshow" id="btn-clearfilter"><i class="material-icons" onclick="onClickClearFilter()">clear</i></span>
         </div>
       </div>
     </div>
@@ -40,8 +43,7 @@
     </table>
     <div id="spinner" class="spinner"></div>
   </div>
-    <div id="tablePaginator" class="pull-right">
-      
+    <div id="tablePaginator">
     </div>
 
 </div>

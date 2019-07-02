@@ -19,7 +19,7 @@ const checkboxAll           = $('#checkbox-select-all');
 
 window.addEventListener("load", _initialize, true);
 
-function onClick_clearFilter()
+function onClickClearFilter()
 {
     filtertext = '';
     $('#filtertext').val('');
@@ -394,19 +394,19 @@ function template_AlertErro(message)
 }
 function template_GenerateEditorForm(isEditar, data)
 {
+    let editar = isEditar || false;
+    let item = data && data[0] || undefined;
     let ano_fabricacao = item && item.ano_fabricacao || '';
     let ano_modelo = item && item.ano_modelo || '';
     let preco_fipe = item && item.preco_fipe || '';
     let descricao = item && item.descricao || '';
     let marca_id = item && item.marca_id || '';
     let renavam = item && item.renavam || '';
-    let item = data && data[0] || undefined;
     let placa = item && item.placa || '';
     let preco = item && item.preco || '';
     let cor = item && item.cor || '';
     let id = item && item.id || '';
     let km = item && item.km || '';
-    let editar = isEditar || false;
 
     let method = editar ? "ajax_EditAutomovel("+id+")" : "ajax_CreateAutomovel()" ;
     let verbo = editar ? "Editar" : "Criar";

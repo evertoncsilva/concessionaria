@@ -20,7 +20,18 @@
     padding-right: 8px;
     padding-left: 8px;
 }
-
+.container-form-relatorio {
+    margin-top: 20px;
+}
+.container-relatorio-content {
+    margin-top: 15px;
+}
+.botoes-relatorio {
+    margin-top: 25px;
+}
+.botoes-relatorio a:hover {
+    text-decoration: none;
+}
 #editor-form .container-fluid {
     padding: 15px;
 }
@@ -46,4 +57,17 @@
 #col-filterbutton {
     padding-left: 3px;
     padding-right: 1px;
+}
+#col-data-add, #col-data-alt, #col-preco {
+    width: 10%;
+}
+#col-marca, #col-placa {
+    width: 8%;
+}
+#col-descricao {
+    width: 54%;
+}
+#btn-relatorios > i{
+    display: inline-flex;
+    vertical-align: middle;
 }
