@@ -1,19 +1,19 @@
-let activePageName      = 'marcas';
-let pageSize            = 10;
-let activePageNumber    = 0;
-let allMarcas           = null;
-let marcasCount         = 0;
-let totalPagesCount     = 0;
-let lastPageNumber      = 0;
-let lastAlertId         = 0;
-let nextButtom          = $("#paginator-next");
-let previousButtom      = $("#paginator-previous");
-let mainContainer       = $("#main-container");
-const editorForm        = $('#editor-form');
-const tablePaginator    = $('#tablePaginator');
-const tablePanel        = $('#table-panel');
-const targetTable       = $('#tableContent');
-const checkboxAll       = $('#checkbox-select-all');
+let activePageName = 'marcas';
+let pageSize = 10;
+let activePageNumber = 0;
+let allMarcas = null;
+let marcasCount = 0;
+let totalPagesCount = 0;
+let lastPageNumber = 0;
+let lastAlertId = 0;
+let nextButtom = $("#paginator-next");
+let previousButtom = $("#paginator-previous");
+let mainContainer = $("#main-container");
+const editorForm = $('#editor-form');
+const tablePaginator = $('#tablePaginator');
+const tablePanel = $('#table-panel');
+const targetTable = $('#tableContent');
+const checkboxAll = $('#checkbox-select-all');
 
 window.addEventListener("load", _initialize, true);
 
@@ -21,9 +21,9 @@ window.addEventListener("load", _initialize, true);
 function _initialize() 
 {
     setActiveLinks(activePageName);
-    ajax_GetMarcas();
+    ajaxGetMarcas();
 }
-function ajax_GetMarcas(page) 
+function ajaxGetMarcas(page) 
 {
     $.ajax({
         type: "GET",
@@ -41,13 +41,13 @@ function ajax_GetMarcas(page)
             lastPageNumber = (totalPagesCount > 1) ? (totalPagesCount -1) : 0;
             try {
                 if(page === 'last') {
-                    render_Page(lastPageNumber);
+                    renderPage(lastPageNumber);
                 }
                 else if(page === 'reload') {
-                    render_Page(activePageNumber);
+                    renderPage(activePageNumber);
                 }
                 else {
-                    render_Page(0);
+                    renderPage(0);
                 }
                 
                 $('#spinner').remove();
@@ -58,7 +58,7 @@ function ajax_GetMarcas(page)
 
     });
 }
-function ajax_EditMarca(id) 
+function ajaxEditMarca(id) 
 {
     var data = {
         action: 'update',
@@ -67,9 +67,9 @@ function ajax_EditMarca(id)
         descricao: $('#editor-form #descricao').val()
     }
     $.post("/v3/marcas.php", data, function (result) {
-        render_AlertSuccess("Componente editado com sucesso!");
-        remove_EditorForm();
-        ajax_GetMarcas('reload');
+        renderAlertSuccess("Componente editado com sucesso!");
+        removeEditorForm();
+        ajaxGetMarcas('reload');
     })
     .fail(function(error) {
         err = error.responseJSON;
@@ -77,50 +77,50 @@ function ajax_EditMarca(id)
             err.message = "Erro desconhecido";
             err.code = "666";
         }
-         render_AlertError("Não foi possível executar a operação ["+err.message+" | cód: "+err.code+"]");
+         renderAlertError("Não foi possível executar a operação ["+err.message+" | cód: "+err.code+"]");
          if(err.formErrors)
-         update_EditorFormFieldErrors(err.formErrors);
+         updateEditorFormFieldErrors(err.formErrors);
     })
 
 }
-function render_Table(itens) 
+function renderTable(itens) 
 {
     targetTable.empty();
     itens.forEach(function(item) {
-        targetTable.append(template_GenerateTableItem(item));
+        targetTable.append(templateGenerateTableItem(item));
     });
 }
-function ajax_DeleteManyMarcas(comps)
+function ajaxDeleteManyMarcas(comps)
 {
     let actualPage = activePageNumber;
     $.post("/v3/marcas.php", {'action': 'delete_many', 'items': comps}, function (data) {
-        render_AlertSuccess(data.message);
+        renderAlertSuccess(data.message);
     })
     .fail(function(error) {
         renderAlertError("Não foi possível executar a operação ["+error.message+"| cód: "+error.code+"]");
     })
     .always(function() {
-        ajax_GetMarcas('reload');
+        ajaxGetMarcas('reload');
     })
 }
-function render_Page(pageNumber) 
+function renderPage(pageNumber) 
 {
     pageNumber = (pageNumber > 0) ? pageNumber : 0;
     let startItem = pageNumber * pageSize;
     let slice = allMarcas.slice(startItem, (startItem + pageSize));
-    toggle_TablePanel(true);
-    render_Table(slice);
+    toggleTablePanel(true);
+    renderTable(slice);
     activePageNumber = pageNumber;
-    update_PageButtoms();
+    updatePageButtoms();
     $('#table-itemcount').empty();
     $('#table-itemcount').append(allMarcas.length + 'Itens');
 }
-function toggle_TablePanel(val)
+function toggleTablePanel(val)
 {
     tablePanel.toggleClass('noshow', !val);
     tablePaginator.toggleClass('noshow', !val);
 }
-function toggle_SelectAll(val)
+function toggleSelectAll(val)
 {
     let toggleVal;
     if(val != undefined){
@@ -132,32 +132,32 @@ function toggle_SelectAll(val)
     }
     $('.item-checkbox').prop('checked', toggleVal);
 }
-function render_CreateForm()
+function renderCreateForm()
 {
     if($('#editor-form-wrapper').length) return;
-    toggle_TablePanel(false);
-    mainContainer.append(template_GenerateEditorForm());
+    toggleTablePanel(false);
+    mainContainer.append(templateGenerateEditorForm());
 }
-function render_EditForm(id)
+function renderEditForm(id)
 {
-    toggle_TablePanel(false);
+    toggleTablePanel(false);
     let item = allMarcas.filter(x => x.id === id);
-    mainContainer.append(template_GenerateEditorForm(true, item));
+    mainContainer.append(templateGenerateEditorForm(true, item));
 }
-function onClick_NextPage()
+function onClickNextPage()
 {
     if(activePageNumber < lastPageNumber) {
-        render_Page(activePageNumber + 1, );
+        renderPage(activePageNumber + 1, );
     }
 }
-function onClick_PreviousPage()
+function onClickPreviousPage()
 {
     if(activePageNumber > 0)
     {
-        render_Page(activePageNumber -1);
+        renderPage(activePageNumber -1);
     }
 }
-function onClick_ExcluirVarios()
+function onClickExcluirVarios()
 {
     let selected = [];
     
@@ -167,14 +167,14 @@ function onClick_ExcluirVarios()
     
     if(selected.length === 0)
         {
-            render_AlertError("Selecione algum item para deletar")
+            renderAlertError("Selecione algum item para deletar")
         }
     else 
         {
-            ajax_DeleteManyMarcas(selected);
+            ajaxDeleteManyMarcas(selected);
         }
 }
-function ajax_CreateMarca() 
+function ajaxCreateMarca() 
 {
     var data = {
         action: 'create',
@@ -183,9 +183,9 @@ function ajax_CreateMarca()
     }
 
     $.post("/v3/marcas.php", data, function (result) {
-        render_AlertSuccess("Marca criada com sucesso!");
-        remove_EditorForm();
-        ajax_GetMarcas('last');
+        renderAlertSuccess("Marca criada com sucesso!");
+        removeEditorForm();
+        ajaxGetMarcas('last');
     })
     .fail(function(error) {
         err = error.responseJSON;
@@ -193,21 +193,21 @@ function ajax_CreateMarca()
             err.message = "Erro desconhecido";
             err.code = "666";
         }
-         render_AlertError("Não foi possível executar a operação ["+err.message+" | cód: "+err.code+"]");
+         renderAlertError("Não foi possível executar a operação ["+err.message+" | cód: "+err.code+"]");
 
          if(err.formErrors)
-         update_EditorFormFieldErrors(err.formErrors);
+         updateEditorFormFieldErrors(err.formErrors);
     })
 }
-function onClick_MenuAdicionar()
+function onClickMenuAdicionar()
 {
-    render_CreateForm();
+    renderCreateForm();
 }
-function remove_EditorForm()
+function removeEditorForm()
 {
     $('#editor-form-wrapper').remove();
 }
-function update_PageButtoms()
+function updatePageButtoms()
 {
     if(activePageNumber < 1) {previousButtom.toggleClass('disabled', true);}
     else {previousButtom.toggleClass('disabled', false);}
@@ -215,7 +215,7 @@ function update_PageButtoms()
     if(activePageNumber < lastPageNumber) {nextButtom.toggleClass('disabled', false);}
     else {nextButtom.toggleClass('disabled', true);}
 }
-function template_GenerateTableItem(item) 
+function templateGenerateTableItem(item) 
 {
     return `<tr>
     <td class="td-select"><input type="checkbox" value="${item.id}" class="item-checkbox"></td>
@@ -223,19 +223,19 @@ function template_GenerateTableItem(item)
     <td>${item.nome}</td>
     <td>${item.descricao}</td>
     <td>
-        <i class="material-icons clickable" onclick="onClick_EditMarca(${item.id})">edit</i>
-        <i class="material-icons clickable" onclick="onClick_DeleteMarca(${item.id})">delete</i>
+        <i class="material-icons clickable" onclick="onClickEditMarca(${item.id})">edit</i>
+        <i class="material-icons clickable" onclick="onClickDeleteMarca(${item.id})">delete</i>
     </td>
     </tr>`;
 }
-function template_AlertSuccess(message) 
+function templateAlertSuccess(message) 
 {
     lastAlertId++;
     return `<div id="alert-${lastAlertId}" class="alert alert-success alert-fixed" role="alert">
     <span class"alert-text">${message}</span>
     <i class="material-icons">done</i></div>`;
 }
-function template_AlertErro(message) 
+function templateAlertErro(message) 
 {
     lastAlertId++;
     return `<div id="alert-${lastAlertId}" class="alert alert-warning alert-fixed" role="alert">
@@ -243,14 +243,14 @@ function template_AlertErro(message)
     <i class="material-icons">error_outline</i></div>
     </div>`;
 }
-function template_GenerateEditorForm(isEditar, data)
+function templateGenerateEditorForm(isEditar, data)
 {
     let item = (data != undefined) ? data[0] : undefined;
     let nome = (item != undefined) ? item.nome : '';
     let descricao = (item != undefined) ? item.descricao : '';
     let id = (item != undefined) ? item.id : '';
     let editar = (isEditar != undefined) ? isEditar : false;
-    let method = editar ? "ajax_EditMarca("+id+")" : "ajax_CreateMarca()" ;
+    let method = editar ? "ajaxEditMarca("+id+")" : "ajaxCreateMarca()" ;
     let verb = editar ? "Editar" : "Criar";
     let panelTitle = verb + " marca";
 
@@ -290,63 +290,63 @@ function template_GenerateEditorForm(isEditar, data)
 
                     <div class="row editor-button-container">
                     <button type="reset" class="btn btn-default" >Limpar</button>
-                    <button type="button" class="btn btn-warning" onclick="onClick_CreateFormCancelar()">Cancelar</button>
+                    <button type="button" class="btn btn-warning" onclick="onClickCreateFormCancelar()">Cancelar</button>
                     <button type="button" class="btn btn-success" onclick="${method}">Salvar</button>
                 </div>
                 </form>
             </div>`
 }
-function render_AlertSuccess(msg) 
+function renderAlertSuccess(msg) 
 {
-    $("body").append(template_AlertSuccess(msg));
+    $("body").append(templateAlertSuccess(msg));
         $("#alert-"+lastAlertId).delay(1500).fadeOut(1500, function(){
             $(this).remove();
         });
 }
-function render_AlertError(msg) 
+function renderAlertError(msg) 
 {
-    $("body").append(template_AlertErro(msg));
+    $("body").append(templateAlertErro(msg));
         $("#alert-"+lastAlertId).delay(1500).fadeOut(1500, function(){
             $(this).remove();
         });
 }
-function onClick_EditMarca(id) 
+function onClickEditMarca(id) 
 {
-    render_EditForm(id);
+    renderEditForm(id);
 }
-function ajax_DeleteMarca(id) 
+function ajaxDeleteMarca(id) 
 {
     $.post("/v3/marcas.php", {'action': 'delete_one', 'id': id}, function (data) {
-        remove_ItemFromList(id);
-        render_AlertSuccess(data.message);
+        removeItemFromList(id);
+        renderAlertSuccess(data.message);
     })
     .fail(function(error) {
         renderAlertError("Não foi possível executar a operação ["+error.message+"| cód: "+error.code+"]");
     })
     .always(function() {
-        update_reloadTable();
+        updateReloadTable();
     })
 }
-function onClick_DeleteMarca(id) 
+function onClickDeleteMarca(id) 
 {
-    ajax_DeleteMarca(id);
+    ajaxDeleteMarca(id);
 }
-function update_reloadTable()
+function updateReloadTable()
 {
-    render_Page(activePageNumber);
+    renderPage(activePageNumber);
 }
-function remove_ItemFromList(id)
+function removeItemFromList(id)
 {
     allMarcas = allMarcas.filter(function(item) {
         return item.id != id;
     })
 }
-function onClick_CreateFormCancelar() 
+function onClickCreateFormCancelar() 
 {
-    remove_EditorForm();
-    render_Page(activePageNumber);
+    removeEditorForm();
+    renderPage(activePageNumber);
 }
-function update_EditorFormFieldErrors(data)
+function updateEditorFormFieldErrors(data)
 {
     if(data === undefined || data === null) return;
     if(data.nome)

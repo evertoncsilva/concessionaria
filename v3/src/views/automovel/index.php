@@ -19,7 +19,7 @@
           <input class="form-control" id="filtertext" type="text" name="filter" placeholder="Filtrar...">
         </div>
         <div class="col-md-1" id="col-filterbutton">
-          <span class="btn btn-outline-info filterbutton"><i class="material-icons" onclick="ajax_getPage()">search</i></span>
+          <span class="btn btn-outline-info filterbutton"><i class="material-icons" onclick="ajaxGetPage()">search</i></span>
           <span class="btn btn-outline-danger filterbutton noshow" id="btn-clearfilter"><i class="material-icons" onclick="onClickClearFilter()">clear</i></span>
         </div>
       </div>
@@ -27,7 +27,7 @@
     <table class="table table-hover" id="data-table">
       <thead>
         <tr>
-          <th class="thead-select"><input id="checkbox-select-all" onclick="toggle_SelectAll()" type="checkbox"></th>
+          <th class="thead-select"><input id="checkbox-select-all" onclick="toggleSelectAll()" type="checkbox"></th>
           <th class="thead-id" id="testeclick">#</th>
           <th class="thead-placa">Descrição</th>
           <th class="thead-preco">Preco</th>

@@ -37,11 +37,11 @@ if(isset($msg) && $success == false)
 { ?>
 <script>
 
-   $("body").append(template_AlertErro("<?= $msg ?>"));
+   $("body").append(templateAlertErro("<?= $msg ?>"));
         $("#alert").delay(1500).fadeOut(1500, function(){
             $(this).remove();
         });
-function template_AlertErro(message) 
+function templateAlertErro(message) 
   {
       return `<div id="alert" class="alert alert-warning alert-fixed" role="alert">
       <span class"alert-text">${message}</span>
@@ -57,11 +57,11 @@ if(isset($msg) && $success == true)
 { ?>
 <script>
 
-   $("body").append(template_AlertSuccess("<?= $msg ?>"));
+   $("body").append(templateAlertSuccess("<?= $msg ?>"));
         $("#alert").delay(1500).fadeOut(1500, function(){
             $(this).remove();
         });
-function template_AlertSuccess(message) 
+function templateAlertSuccess(message) 
   {
       
       return `<div id="alert" class="alert alert-success alert-fixed" role="alert">

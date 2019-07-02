@@ -7,7 +7,7 @@ var MAX_PAGE_SIZE = 10;
 function resetFormById(id) {
     document.getElementById(id).reset();
 }
-function getVal_ByID(id)
+function getValByID(id)
 {
     return document.getElementById(id).value;
 }
