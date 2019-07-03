@@ -63,11 +63,20 @@
 if (isset($queryResult))
 {
 ?>
-    <div class="container-fluid container-relatorio-content">
+    <div class="container-fluid container-relatorio-content" id="printarea">
         <div class="card">
             <div class="card-header">
                 <?php $data = date_format(date_create(), 'd/m/Y H:i:s')?>
-                <h6>Relatório gerado <?= $data ?> - <?= sizeof($queryResult) ?> Itens</h6>
+                <div class="row">
+                    <div class="col-md-11">
+                        <h6>Relatório gerado <?= $data ?> - <?= sizeof($queryResult) ?> Itens</h6>
+                    </div>
+                    <div class="col-md-1">
+                        <button id="print-button" class="btn btn-light" style="padding: 0 8px; 0 8px; margin 0;" onclick="window.print()">
+                            <i class="material-icons" >print</i>
+                        </button> 
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <table class="table">
@@ -98,6 +107,24 @@ if (isset($queryResult))
             </div>
         </div>
 </div>
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #printarea * {
+            visibility: visible;
+        }
+        #printarea {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        #print-button {
+            display: none:
+        }
+    }
+</style>
 <?php    
 }
 ?>
