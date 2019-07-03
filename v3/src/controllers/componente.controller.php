@@ -20,7 +20,6 @@ class ComponenteController extends Controller {
         parent::__construct('componente', $dto);
         $this->requireAuth = true;
     }
-
     public function getAll($args) {
         if (!isset($args)) {
             $args = array();
@@ -28,7 +27,6 @@ class ComponenteController extends Controller {
         $data = $this->DTO->getAll($args);
         $this->send($data);
     }
-
     public function getPaginated($args) {
         $ar = $args;
         $lastItem = null;
@@ -49,12 +47,10 @@ class ComponenteController extends Controller {
             $action = 'previous'; 
         }
         $itens = $this->DTO->getAll();
-
         if ($itens) {
             $this->send($itens);
-        }  
+        }
     }
-
     public function index() {
         renderIndex();
     }
@@ -73,7 +69,6 @@ class ComponenteController extends Controller {
             $this->error(['msg'=>"Argumentos inválidos", 'error-code' => 3]);
         }
     }
-    
     public function create($args) {
         if (!isset($args['nome'])) {
 
@@ -136,7 +131,6 @@ class ComponenteController extends Controller {
     }
     public function deleteMany($args) {
         if (isset($args['items'])) {
-            
             if ($this->DTO->deleteMany($args['items'])) {
                     $res = ['msg' => "Deletado  itens com sucesso!"];
                     $this->success($res);

@@ -57,7 +57,7 @@ class AutomovelController extends Controller {
         if ($itens) {
             $this->send($itens);
         }  
-    }    
+    }
     public function index() {
         renderIndex();
     }
@@ -209,7 +209,7 @@ class AutomovelController extends Controller {
                 return 'a.descricao';
 
         }
-    } 
+    }
     private function relatorioValidaOrder($order = 'asc') {
         switch($order) {
             case 'asc':

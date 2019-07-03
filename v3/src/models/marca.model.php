@@ -31,10 +31,10 @@ class Marca extends Model {
 
         if (!isset($args['nome'])) {
             array_push($invalid, 'nome');
-        } 
+        }
         elseif (!isset($args['descricao'])) {
             array_push($invalid, 'descricao');
-        } 
+        }
         else {
             return static::create($args);
         }

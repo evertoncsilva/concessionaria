@@ -4,7 +4,7 @@
 <?php include __DIR__.'/../partials/header.php' ?>
 
 <div class="container">
-<div id="logreg-forms">
+<div id="logreg_forms">
         <form class="form-signin" action="login.php" method="POST">
             <input type="hidden" name="action" value="login">
             <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Efetue Login </h1>

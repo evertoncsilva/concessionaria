@@ -5,20 +5,20 @@
 <?php include __DIR__.'/../partials/navbar.php' ?>
 
 
-<div id="main-container" class="container table_container col-lg-10 col-md-12">
-  <div id="table-panel" class="card">
+<div id="main_container" class="container table-container col-lg-10 col-md-12">
+  <div id="table_panel" class="card">
     <div class="card-header">
       <div class="row">
         <div class="col-md-7">
           <h3 class="panel-title" class="col-md-6">Automóveis</h3>
         </div>
         <div class="col-md-2">
-          <a href="automoveis.php?relatorio" class="btn btn-outline-secondary" id="btn-relatorios">Relatórios <i class="material-icons" id="icon-relatorio">assignment</i></a>
+          <a href="automoveis.php?relatorio" class="btn btn-outline-secondary" id="btn_relatorios">Relatórios <i class="material-icons" id="icon-relatorio">assignment</i></a>
         </div>
-        <div class="col-md-2" id="col-filtertext">
+        <div class="col-md-2" id="col_filtertext">
           <input class="form-control" id="filtertext" type="text" name="filter" placeholder="Filtrar...">
         </div>
-        <div class="col-md-1" id="col-filterbutton">
+        <div class="col-md-1" id="col_filterbutton">
           <span class="btn btn-outline-info filterbutton"><i class="material-icons" onclick="ajaxGetPage()">search</i></span>
           <span class="btn btn-outline-danger filterbutton noshow" id="btn-clearfilter"><i class="material-icons" onclick="onClickClearFilter()">clear</i></span>
         </div>
@@ -43,7 +43,7 @@
     </table>
     <div id="spinner" class="spinner"></div>
   </div>
-    <div id="tablePaginator">
+    <div id="table_paginator">
     </div>
 
 </div>

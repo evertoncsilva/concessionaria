@@ -8,10 +8,10 @@ let lastPageNumber = 0;
 let lastAlertId = 0;
 let nextButtom = $("#paginator-next");
 let previousButtom = $("#paginator-previous");
-let mainContainer = $("#main-container");
-const editorForm = $('#editor-form');
-const tablePaginator = $('#tablePaginator');
-const tablePanel = $('#table-panel');
+let mainContainer = $("#main_container");
+const editorForm = $('#editor_form');
+const table_paginator = $('#table_paginator');
+const tablePanel = $('#table_panel');
 const targetTable = $('#tableContent');
 const checkboxAll = $('#checkbox-select-all');
 
@@ -63,8 +63,8 @@ function ajaxEditComponente(id)
     var data = {
         action: 'update',
         id: id,
-        nome: $('#editor-form #nome').val(),
-        descricao: $('#editor-form #descricao').val()
+        nome: $('#editor_form #nome').val(),
+        descricao: $('#editor_form #descricao').val()
     }
     $.post("/v3/componentes.php", data, function (result) {
         renderAlertSuccess("Componente editado com sucesso!");
@@ -118,7 +118,7 @@ function renderPage(pageNumber)
 function toggleTablePanel(val)
 {
     tablePanel.toggleClass('noshow', !val);
-    tablePaginator.toggleClass('noshow', !val);
+    table_paginator.toggleClass('noshow', !val);
 }
 function toggleSelectAll(val)
 {
@@ -134,7 +134,7 @@ function toggleSelectAll(val)
 }
 function renderCreateForm()
 {
-    if($('#editor-form-wrapper').length) return;
+    if($('#editor_form-wrapper').length) return;
     toggleTablePanel(false);
     mainContainer.append(templateGenerateEditorForm());
 }
@@ -178,8 +178,8 @@ function ajaxCreateComponente()
 {
     var data = {
         action: 'create',
-        nome: $('#editor-form #nome').val(),
-        descricao: $('#editor-form #descricao').val()
+        nome: $('#editor_form #nome').val(),
+        descricao: $('#editor_form #descricao').val()
     }
 
     $.post("/v3/componentes.php", data, function (result) {
@@ -205,7 +205,7 @@ function onClickMenuAdicionar()
 }
 function removeEditorForm()
 {
-    $('#editor-form-wrapper').remove();
+    $('#editor_form-wrapper').remove();
 }
 function updatePageButtoms()
 {
@@ -255,11 +255,11 @@ function templateGenerateEditorForm(isEditar, data)
 
     let panelTitle = verb + " componente";
 
-    return `<div id="editor-form-wrapper" class="card">
+    return `<div id="editor_form-wrapper" class="card">
                 <div class="card-header">
                 <h3 class="panel-title">${panelTitle}</h3>
                 </div>
-                <form id="editor-form" action="">
+                <form id="editor_form" action="">
                     <input type="hidden" name="id" value="${id}">
                     <div class="container-fluid">
                         <div class="row">

@@ -5,16 +5,15 @@ require_once __DIR__.'/../models/default-error-response.model.php';
 require_once __DIR__.'/../models/default-success-response.model.php';
 
 class Controller {
+    protected $requireAuth = false;
     protected $templateFolder;
     protected $baseTemplate;
     protected $modelName;
+    protected $DTO;
     public $routes;
-
     public $pageTitle;
     public $activePage;
     public $templateStyles;
-    protected $DTO;
-    protected $requireAuth = false;
 
     protected function __construct($name, DTO $DTO) {
         $nameLowerCase = strtolower($name);
@@ -44,13 +43,11 @@ class Controller {
             require_once _VIEWS_ROOT.'login/index.php';
             die;
     }
-
     public function send($data) {
         header('Content-Type: application/json');
         echo json_encode($data);
         die;
     }
-
     /**
      * Evia um Json com mensagem de erro
      *
@@ -87,7 +84,6 @@ class Controller {
         http_response_code(200);
         $this->send(new DefaultSuccesResponse($args));
     }
-
     protected function isValidRoute($route, $type) {
         if (isset($this->routes[$type])) {
             if (array_key_exists($route, $this->routes[$type])) {
@@ -96,7 +92,6 @@ class Controller {
         }
         return false;
     }
-    
     public function request() {
         $req    = $_REQUEST;
         $post   = $_POST;
@@ -127,7 +122,7 @@ class Controller {
                     if ($this->isValidRoute($route, 'post')) {
                         $routeMethod = $this->routes['post'][$route];
                         return $this->$routeMethod($post);
-                    } 
+                    }
                     else  {
                         $this->error(['response-code'=> 404, 'msg' => 'Route not found']);
                     }
@@ -135,10 +130,8 @@ class Controller {
         }
         // TODO: render 404
     }
-
     protected function setRequireAuth(bool $option) {
         $this->requireAuth = $option;
     }
 }
-
 ?>

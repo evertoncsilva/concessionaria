@@ -62,7 +62,7 @@ abstract class DTO extends DatabaseConnector {
                 array_push($result, $this->modelName::create($value));
             }
             return $result;
-        } 
+        }
         else {
             return null;
         }
@@ -93,7 +93,7 @@ abstract class DTO extends DatabaseConnector {
             $result['pages-before'] = ($totalItemsBefore > 0) ? ceil($totalItemsBefore / $pageSize) : 0;
             $result['total-item-count'] = $totalItemCount;
             return $result;
-        } 
+        }
         else {
             return null;
         }
@@ -135,7 +135,7 @@ abstract class DTO extends DatabaseConnector {
         if ($data)  {
             $result = $this->modelName::create($data[0]);
             return $result;
-        } 
+        }
         else {
             return null;
         }
@@ -197,7 +197,6 @@ abstract class DTO extends DatabaseConnector {
             return false;
         }
     }
-
     public abstract function update($obj);
     public abstract function create($args);
 }

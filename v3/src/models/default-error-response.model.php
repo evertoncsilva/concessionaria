@@ -5,8 +5,6 @@ class DefaultErrorResponse {
     public $formErrors = array();
     public $info = array();
     protected $http_response_code = 400;
-
-
     public function __construct($args = null, PDOStatement $pdo = null) {
 
         if ($args != null && !empty($args)) { // argumentos passados via array
@@ -27,9 +25,7 @@ class DefaultErrorResponse {
         else {
             throw new Exception("Argumentos inválido no construtor do DefaultErrorResponse"); 
         }
-        
     }
-
     /**
      * Adiciona um erro de form às informações do erro, 
      * para posteriormente ser consumido pelo form
@@ -41,19 +37,17 @@ class DefaultErrorResponse {
     public function addFormError($error) {
         array_push($this->formErrors, $error);
     }
-
     public function httpCode($code = null) {
         if ($code === null) {
             return $this->http_response_code;
-        } 
-
+        }
         else {
             if (is_numeric($code)) {
                 $this->http_response_code = $code;
             }
             else {
                 throw new Exception("DefaultErrorResponse: código de erro http deve ser numérico!");
-            } 
+            }
         }
     }
 }

@@ -5,8 +5,8 @@
 <?php include __DIR__.'/../partials/navbar.php' ?>
 
 
-<div id="main-container" class="container table_container col-lg-10 col-md-12">
-  <div id="table-panel" class="card">
+<div id="main_container" class="container table-container col-lg-10 col-md-12">
+  <div id="table_panel" class="card">
     <div class="card-header">
       <h3 class="panel-title">Componentes <span id="table-itemcount"class="float-right"></span>
       </h3>
@@ -27,7 +27,7 @@
     </table>
     <div id="spinner" class="spinner"></div>
   </div>
-    <div id="tablePaginator" class="pull-right">
+    <div id="table_paginator" class="pull-right">
       <nav aria-label="...">
         <ul class="pagination">
           <li id="paginator-previous" class="page-item" onclick="onClickPreviousPage()">

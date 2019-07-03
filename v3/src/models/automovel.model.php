@@ -27,13 +27,12 @@ class Automovel extends Model {
         return array('placa', 'descricao', 'renavam', 'ano_modelo', 'ano_fabricacao', 'cor', 'km', 'marca_id', 'preco', 'preco_fipe');
     }
     public static function create(array $data) : Automovel {
-
         $instance = new Automovel();
         foreach ($data as $key => $value) {
             if (property_exists($instance, $key)) {
                 if (!is_numeric($value) && ctype_space($value)) {
                     $value = null;
-                } 
+                }
                 $value = trim($value);
                 if ($instance->{$key} === null) {
                     $instance->{$key} = $value;
@@ -65,10 +64,10 @@ class Automovel extends Model {
         
         if($instance->isValid()) {
             return $instance;
-        } 
+        }
         else {
             return $errors;
-        } 
+        }
     }
     public function validaDescricao($descricao, &$errors) {
         if (!isset($descricao) || $descricao === null) {
@@ -82,7 +81,7 @@ class Automovel extends Model {
         if (strlen($descricao) < 8) {
                 $this->validationStatus = false;
                 return $errors->addFormError(['campo' => 'descricao', 'msg' => 'Pelo menos 8 caracteres']);
-        }    
+        }
     }
     public function validaPlaca($placa, &$errors) {
         $regex = '/^[a-z]{3}[-]?[0-9]{4}$/mi';
@@ -123,7 +122,7 @@ class Automovel extends Model {
         if ($this->ano_fabricacao === null) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Ano de fabricação é obrigatório!']);
-        }    
+        }
         if (!is_numeric($ano)) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo'=> 'ano_modelo', 'msg' => 'Apenas números']);
@@ -131,19 +130,19 @@ class Automovel extends Model {
         if ($ano > date('Y') +1) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo'=> 'ano_modelo', 'msg' => 'Ano inválido!']);
-        }   
+        }
         if ($ano < 1900) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo'=> 'ano_modelo', 'msg' => 'Ano inválido!']);
-        }  
+        }
         if ($ano < $this->ano_fabricacao) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo'=> 'ano_modelo', 'msg' => 'Ano do modelo menor que fabricação!']);
-        } 
+        }
         if ($ano > $this->ano_fabricacao +1) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo'=> 'ano_modelo', 'msg' => 'Ano de modelo inválido!']);
-        }            
+        }
     }
     public function validaAnoFabricacao($ano, &$errors) {
         if ($ano === null) {
@@ -153,7 +152,7 @@ class Automovel extends Model {
         if ($this->ano_modelo === null) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Ano de modelo é obrigatório!']);
-        }    
+        }
         if (!is_numeric($ano)) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Apenas números!']);
@@ -161,15 +160,15 @@ class Automovel extends Model {
         if ($ano > date('Y')) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Ano inválido!']);
-        }   
+        }
         if ($ano < 1900) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Ano inválido!']);
-        }  
+        }
         if  ($ano > $this->ano_modelo) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Ano de fabricação maior que modelo!']);
-        }            
+        }
     }
     public function validaCor($cor, &$errors) {
         if(strlen($cor) > 20) {
@@ -183,21 +182,21 @@ class Automovel extends Model {
         if($km < 0) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'km', 'msg' => 'Km menor que zero!']);
-        }  
+        }
         if (!is_numeric($km)) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'km', 'msg' => 'Apenas números!']);
-        }  
+        }
         if ($km > 999999) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'km', 'msg' => 'Máximo 999999!']);
-        }  
+        }
     }
     public function validaMarcaID($id, &$errors) {
         if ($id === null) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'marca_id', 'msg' => 'Marca obrigatória!']);
-        }   
+        }
         if ($id < 1) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'marca_id', 'msg' => 'Marca inválida!']);
@@ -207,7 +206,7 @@ class Automovel extends Model {
         if ($preco === null) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'preco', 'msg' => 'Preço obrigatório!']);
-        }   
+        }
         $preco = str_replace('.','', $preco);
         $preco = str_replace(',','.', $preco);  // substitui virgulas por pontos
         $this->preco = $preco;
@@ -224,7 +223,7 @@ class Automovel extends Model {
         if ($preco === null) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'preco_fipe', 'msg' => 'Preço obrigatório!']);
-        }   
+        }
         $preco = str_replace('.','', $preco);
         $preco = str_replace(',','.', $preco);  // substitui virgulas por pontos
         $this->preco_fipe = $preco;

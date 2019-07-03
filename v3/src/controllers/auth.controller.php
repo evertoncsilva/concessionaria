@@ -26,7 +26,6 @@ class AuthController extends Controller {
         }
         parent::renderLogin("É necessário efetuar login!");
     }
-
     public function login($args) {
         if (!isset($args['login']) || !isset($args['senha'])) {
             parent::renderLogin("Dados para login inválidos!");
@@ -46,7 +45,6 @@ class AuthController extends Controller {
         }
 
     }
-
     public function registrar($args) {
         $login = $args['login'] ?? null;
         $senha = $args['senha'] ?? null;
@@ -68,10 +66,7 @@ class AuthController extends Controller {
                 return parent::renderLogin($register->message, true);
             }
         }
-
-
     }
-
     public function logout() {
         session_destroy();
         $this->renderLogin("Você efetuou logout com sucesso!", true);

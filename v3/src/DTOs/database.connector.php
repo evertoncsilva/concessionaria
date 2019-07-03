@@ -18,7 +18,6 @@ class DatabaseConnector
      */
     public $conn = null;
     public $dsn = null;
-
     public function __construct() {
         $this->dsn =    "mysql:host=".static::$hostname.
                         ";dbname=".static::$dbname.
@@ -28,24 +27,22 @@ class DatabaseConnector
     public function connect() {
         try {
             $this->conn = new PDO($this->dsn, static::$username, static::$password, static::$dbOptions);
-        } 
+        }
         catch (Exception $err) {
             throw new Exception("Não foi possível conectar ao banco de dados", 1);
         }
     }
-
     public function disconnect() {
         if ($this->conn) {
             $this->conn = null;
         }
     }
-
     public function query($sql) {
         try {
             $query = $this->conn->query($sql);
             $result = $query->fetchAll();
             return $result;
-        } 
+        }
         catch(Exception $e) {
             echo $e;
         }

@@ -6,7 +6,7 @@
 <?php include __DIR__.'/../partials/navbar.php' ?>
 
 
-<div class="container table_container col-lg-10 col-md-12">
+<div class="container table-container col-lg-10 col-md-12">
   <div class="panel panel-primary">
     <div class="panel-heading">
       <h3 class="panel-title"><?php echo $pageTitle ?></h3>

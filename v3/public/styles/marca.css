@@ -1,5 +1,5 @@
 
-.table_container {
+.table-container {
     float: left;
     margin-top: 80px;
 }
@@ -21,7 +21,7 @@
     padding-left: 8px;
 }
 
-#editor-form .container-fluid {
+#editor_form .container-fluid {
     padding: 15px;
 }
 .editor-button-container {

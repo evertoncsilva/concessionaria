@@ -1,5 +1,5 @@
 
-.table_container {
+.table-container {
     float: left;
     margin-top: 80px;
 }
@@ -32,7 +32,7 @@
 .botoes-relatorio a:hover {
     text-decoration: none;
 }
-#editor-form .container-fluid {
+#editor_form .container-fluid {
     padding: 15px;
 }
 .editor-button-container {
@@ -44,30 +44,29 @@
 .editor-button-container button {
     margin-left: 2px;
 }
-
 .form-group.has-feedback .form-control-feedback {
     display: none;
 }
 .filterbutton {
     max-height: 37px;
 }
-#col-filtertext {
+#col_filtertext {
     padding-right: 0;
 }
-#col-filterbutton {
+#col_filterbutton {
     padding-left: 3px;
     padding-right: 1px;
 }
-#col-data-add, #col-data-alt, #col-preco {
+#col_data_add, #col_data_alt, #col_preco {
     width: 10%;
 }
-#col-marca, #col-placa {
+#col_marca, #col_placa {
     width: 8%;
 }
-#col-descricao {
+#col_descricao {
     width: 54%;
 }
-#btn-relatorios > i{
+#btn_relatorios > i{
     display: inline-flex;
     vertical-align: middle;
 }

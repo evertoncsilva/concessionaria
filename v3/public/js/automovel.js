@@ -7,13 +7,13 @@ let automoveisCount = 0;
 let totalPagesCount = 0;
 let lastPageNumber = 0;
 let lastAlertId = 0;
-let mainContainer = $("#main-container");
+let mainContainer = $("#main_container");
 let componentes = null;
 let autoComponentesIds = null;
 let filtertext = '';
-const editorForm = $('#editor-form');
-const tablePaginator = $('#tablePaginator');
-const tablePanel = $('#table-panel');
+const editorForm = $('#editor_form');
+const table_paginator = $('#table_paginator');
+const tablePanel = $('#table_panel');
 const targetTable = $('#tableContent');
 const checkboxAll = $('#checkbox-select-all');
 
@@ -58,7 +58,7 @@ function renderPagination()
                             <li class="page-item ${linkActive +2 <= totalPagesCount ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive + 1 <= totalPagesCount ? (linkActive + 1) : 0})">Próximo</a></li>
                             </ul>
                         </nav>`
-    tablePaginator.html(template);
+    table_paginator.html(template);
 }
 function gotoPage(num)
 {
@@ -134,16 +134,16 @@ function ajaxCreateAutomovel()
     //TODO: EDITAR AUTOMOVEL
     var data = {
         action: 'create',
-        descricao:          getValByID('editor-form-descricao'),
-        placa:              getValByID('editor-form-placa'),
-        renavam:            getValByID('editor-form-renavam'),
-        ano_modelo:         getValByID('editor-form-ano_modelo'),
-        ano_fabricacao:     getValByID('editor-form-ano_fabricacao'),
-        cor:                getValByID('editor-form-cor'),
-        km:                 getValByID('editor-form-km'),
-        marca_id:           getValByID('editor-form-marca_id'),
-        preco:              getValByID('editor-form-preco'),
-        preco_fipe:         getValByID('editor-form-preco_fipe'),
+        descricao:          getValByID('editor_form-descricao'),
+        placa:              getValByID('editor_form-placa'),
+        renavam:            getValByID('editor_form-renavam'),
+        ano_modelo:         getValByID('editor_form-ano_modelo'),
+        ano_fabricacao:     getValByID('editor_form-ano_fabricacao'),
+        cor:                getValByID('editor_form-cor'),
+        km:                 getValByID('editor_form-km'),
+        marca_id:           getValByID('editor_form-marca_id'),
+        preco:              getValByID('editor_form-preco'),
+        preco_fipe:         getValByID('editor_form-preco_fipe'),
         componentes_ids:    componentes
 
     }
@@ -173,16 +173,16 @@ function ajaxEditAutomovel(id)
     var data = {
         action: 'update',
         id:             id,
-        descricao:          getValByID('editor-form-descricao'),
-        placa:              getValByID('editor-form-placa'),
-        renavam:            getValByID('editor-form-renavam'),
-        ano_modelo:         getValByID('editor-form-ano_modelo'),
-        ano_fabricacao:     getValByID('editor-form-ano_fabricacao'),
-        cor:                getValByID('editor-form-cor'),
-        km:                 getValByID('editor-form-km'),
-        marca_id:           getValByID('editor-form-marca_id'),
-        preco:              getValByID('editor-form-preco'),
-        preco_fipe:         getValByID('editor-form-preco_fipe'),
+        descricao:          getValByID('editor_form-descricao'),
+        placa:              getValByID('editor_form-placa'),
+        renavam:            getValByID('editor_form-renavam'),
+        ano_modelo:         getValByID('editor_form-ano_modelo'),
+        ano_fabricacao:     getValByID('editor_form-ano_fabricacao'),
+        cor:                getValByID('editor_form-cor'),
+        km:                 getValByID('editor_form-km'),
+        marca_id:           getValByID('editor_form-marca_id'),
+        preco:              getValByID('editor_form-preco'),
+        preco_fipe:         getValByID('editor_form-preco_fipe'),
         componentes_ids:    componentes
 
     }
@@ -236,7 +236,7 @@ function renderPage(data)
 function toggleTablePanel(val)
 {
     tablePanel.toggleClass('noshow', !val);
-    tablePaginator.toggleClass('noshow', !val);
+    table_paginator.toggleClass('noshow', !val);
 }
 function toggleSelectAll(val)
 {
@@ -252,7 +252,7 @@ function toggleSelectAll(val)
 }
 function renderCreateForm()
 {
-    if($('#editor-form-wrapper').length) return;
+    if($('#editor_form-wrapper').length) return;
     toggleTablePanel(false);
     mainContainer.append(templateGenerateEditorForm());
     setFormMasks();
@@ -313,7 +313,7 @@ function onClickMenuAdicionar()
 }
 function removeEditorForm()
 {
-    $('#editor-form-wrapper').remove();
+    $('#editor_form-wrapper').remove();
 }
 function templateGenerateTableItem(item) 
 {
@@ -373,33 +373,33 @@ function templateGenerateEditorForm(isEditar, data)
     let panelTitle = verbo + " automóvel";
 
     return `<!-- form -->
-    <div id="editor-form-wrapper" class="card">
+    <div id="editor_form-wrapper" class="card">
         <div class="card-header">
           <h4 class="panel-title">${verbo} automóvel</h4>
         </div>
-        <form id="editor-form" action="">
+        <form id="editor_form" action="">
         <input type="hidden" name="id" value="1">
           <div class="container-fluid">
                 <!-- ROW -->
                 <div class="row">
                   <div class="col-md-6">
                       <div class="form group">
-                          <label for="editor-form-descricao">Descrição do automóvel</label>
-                          <input type="text" class="form-control" name="descricao" id="editor-form-descricao" placeholder="Insira uma descrição para seu automóvel" value="${descricao}">
+                          <label for="editor_form-descricao">Descrição do automóvel</label>
+                          <input type="text" class="form-control" name="descricao" id="editor_form-descricao" placeholder="Insira uma descrição para seu automóvel" value="${descricao}">
                       </div>
                   </div>
     
                   <div class="col-md-3">
                       <div class="form-group">
-                          <label class="control-label" for="editor-form-placa">Placa</label>
-                          <input type="text" class="form-control" name="placa" id="editor-form-placa" placeholder="XXX1234" value="${placa}" maxlength="8">
+                          <label class="control-label" for="editor_form-placa">Placa</label>
+                          <input type="text" class="form-control" name="placa" id="editor_form-placa" placeholder="XXX1234" value="${placa}" maxlength="8">
                       </div>  
                   </div>
     
                   <div class="col-md-3">
                       <div class="form-group">
-                          <label class="control-label" for="editor-form-renavam">Código RENAVAM</label>
-                          <input type="text" class="form-control" name="renavam" id="editor-form-renavam" placeholder="00000000000" value="${renavam}" maxlength="11">
+                          <label class="control-label" for="editor_form-renavam">Código RENAVAM</label>
+                          <input type="text" class="form-control" name="renavam" id="editor_form-renavam" placeholder="00000000000" value="${renavam}" maxlength="11">
                       </div>  
                   </div>
                 </div>
@@ -408,8 +408,8 @@ function templateGenerateEditorForm(isEditar, data)
                 <div class="row">
                   <div class="col-md-2">
                       <div class="form group" data-group="descricao">
-                          <label for="editor-form-ano_modelo">Ano Modelo</label>
-                          <select name="ano_modelo" id="editor-form-ano_modelo" class="form-control">
+                          <label for="editor_form-ano_modelo">Ano Modelo</label>
+                          <select name="ano_modelo" id="editor_form-ano_modelo" class="form-control">
                             <!-- ANO MODELO OPTIONS -->
                             ${templateYearOptions(ano_modelo, 'modelo')}
                           </select>
@@ -418,8 +418,8 @@ function templateGenerateEditorForm(isEditar, data)
     
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label class="control-label" for="editor-form-ano_fabricacao">Ano Fabricação</label>
-                          <select name="ano_fabricacao" id="editor-form-ano_fabricacao" class="form-control">
+                          <label class="control-label" for="editor_form-ano_fabricacao">Ano Fabricação</label>
+                          <select name="ano_fabricacao" id="editor_form-ano_fabricacao" class="form-control">
                             <!-- ANO FABRICACAO OPTIONS -->
                             ${templateYearOptions(ano_fabricacao)}
                           </select>
@@ -428,20 +428,20 @@ function templateGenerateEditorForm(isEditar, data)
     
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label class="control-label" for="editor-form-cor">Cor</label>
-                          <input type="text" class="form-control" name="cor" id="editor-form-cor" placeholder="Cor" value="${cor}" maxlength="20">
+                          <label class="control-label" for="editor_form-cor">Cor</label>
+                          <input type="text" class="form-control" name="cor" id="editor_form-cor" placeholder="Cor" value="${cor}" maxlength="20">
                       </div>  
                   </div>
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label class="control-label" for="editor-form-km">KM</label>
-                          <input type="text" class="form-control" name="km" id="editor-form-km" placeholder="..." value="${km}" maxlength="7">
+                          <label class="control-label" for="editor_form-km">KM</label>
+                          <input type="text" class="form-control" name="km" id="editor_form-km" placeholder="..." value="${km}" maxlength="7">
                       </div>  
                   </div>
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label class="control-label" for="editor-form-marca_id">Marca</label>
-                          <select name="marca_id" id="editor-form-marca_id" class="form-control">
+                          <label class="control-label" for="editor_form-marca_id">Marca</label>
+                          <select name="marca_id" id="editor_form-marca_id" class="form-control">
                             <!-- MARCA ID OPTIONS -->
                           </select>
                       </div>  
@@ -452,15 +452,15 @@ function templateGenerateEditorForm(isEditar, data)
                 <div class="row">
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label for="editor-form-preco">Preço</label>
-                          <input type="text" class="form-control" name="preco" id="editor-form-preco" placeholder="Preço" value="${preco}">
+                          <label for="editor_form-preco">Preço</label>
+                          <input type="text" class="form-control" name="preco" id="editor_form-preco" placeholder="Preço" value="${preco}">
                       </div>
                   </div>
     
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label class="control-label" for="editor-form-preco_fipe">Preço FIPE</label>
-                          <input type="text" class="form-control" name="preco_fipe" id="editor-form-preco_fipe" placeholder="Preço FIPE" value="${preco_fipe}" maxlength="40">
+                          <label class="control-label" for="editor_form-preco_fipe">Preço FIPE</label>
+                          <input type="text" class="form-control" name="preco_fipe" id="editor_form-preco_fipe" placeholder="Preço FIPE" value="${preco_fipe}" maxlength="40">
                       </div>  
                   </div>
                 </div>
@@ -600,7 +600,7 @@ function ajaxGetMarcasThenPopulateEditorForm(auto)
             marcas.forEach(marca => {
                 let template =  `<option value="${marca.id}" ${marca.id === item.marca_id ? 'selected' : ''}>${marca.nome}</option>
                                 `;
-                $('#editor-form-marca_id').append(template);
+                $('#editor_form-marca_id').append(template);
             });
         }
     });
@@ -691,14 +691,14 @@ function renderInvalidFormFeedback(item)
 {
     let nomecampo = item.campo;
     let feedback_div = `<div class="invalid-feedback">${item.msg}</div>`;
-    $('#editor-form-'+nomecampo).toggleClass('is-invalid', true);
-    $(feedback_div).insertAfter('#editor-form-'+nomecampo);
+    $('#editor_form-'+nomecampo).toggleClass('is-invalid', true);
+    $(feedback_div).insertAfter('#editor_form-'+nomecampo);
 }
 function setFormMasks()
 {
-    $('#editor-form-placa').mask('AAA-0000');
-    $('#editor-form-renavam').mask('00000000000');
-    $('#editor-form-preco').mask('000.000,00', {reverse: true});
-    $('#editor-form-preco_fipe').mask('000.000,00', {reverse: true});
-    $('#editor-form-km').mask('000.000', {reverse: true});
+    $('#editor_form-placa').mask('AAA-0000');
+    $('#editor_form-renavam').mask('00000000000');
+    $('#editor_form-preco').mask('000.000,00', {reverse: true});
+    $('#editor_form-preco_fipe').mask('000.000,00', {reverse: true});
+    $('#editor_form-km').mask('000.000', {reverse: true});
 }

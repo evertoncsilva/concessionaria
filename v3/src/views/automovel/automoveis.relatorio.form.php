@@ -81,12 +81,12 @@ if (isset($queryResult))
             <div class="card-body">
                 <table class="table">
                     <thead>
-                        <th id="col-descricao">Descrição</th>
-                        <th id="col-preco">Preço</th>
-                        <th id="col-placa">Placa</th>
-                        <th id="col-marca">Marca</th>
-                        <th id="col-data-add">Data Adicionado</th>
-                        <th id="col-data-alt">Data Alterado</th>
+                        <th id="col_descricao">Descrição</th>
+                        <th id="col_preco">Preço</th>
+                        <th id="col_placa">Placa</th>
+                        <th id="col_marca">Marca</th>
+                        <th id="col_data_add">Data Adicionado</th>
+                        <th id="col_data_alt">Data Alterado</th>
                     </thead>
                     <tbody>
                         <?php foreach($queryResult as $item) {

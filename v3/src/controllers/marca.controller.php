@@ -27,7 +27,6 @@ class MarcaController extends Controller {
         $data = $this->DTO->getAll($args);
         $this->send($data);
     }
-
     public function getPaginated($args) {
         $ar = $args;
         $lastItem = null;
@@ -48,11 +47,9 @@ class MarcaController extends Controller {
             $action = 'previous'; 
         }
         $itens = $this->DTO->getAll();
-        
         if ($itens) {
             $this->send($itens);
-        }  
-            
+        }
     }
     public function index() {
         renderIndex();

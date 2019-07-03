@@ -15,7 +15,6 @@ class MarcasDTO extends DTO {
 
         parent::__construct($tableName, $modelName);
     }
-
     public function create($args) {
         $sql = "INSERT INTO {$this->tableName} (nome, descricao) VALUES('{$args['nome']}','{$args['descricao']}') ";
         $query = $this->conn->prepare($sql);
@@ -23,12 +22,11 @@ class MarcasDTO extends DTO {
 
         if ($query->rowCount()) {
             return true;
-        } 
+        }
         else {
             return false;
-        } 
+        }
     }
-
     public function update($args) {
         $sql = "UPDATE {$this->tableName} SET nome='{$args['nome']}', descricao='{$args['descricao']}' WHERE id = {$args['id']}";
         $query = $this->conn->prepare($sql);
@@ -39,7 +37,7 @@ class MarcasDTO extends DTO {
         }
         else {
             return false;
-        } 
+        }
     }
 }
 ?>
