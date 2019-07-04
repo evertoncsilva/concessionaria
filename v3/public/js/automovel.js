@@ -38,6 +38,9 @@ function locationHashChanged() {
     }
     else if (hash[1] === 'listar' && !isNaN(hash[2])) {
         var pageNum = parseInt(hash[2]) -1;
+        if (pageNum < 0) {
+            return location.hash = '/listar/1';
+        }
         ajaxGetPage(pageNum);
     }
     else if (hash[1] === 'adicionar') {
@@ -108,6 +111,9 @@ function ajaxGetPage(pageNum = 0, filter = filtertext) {
             $('#spinner').remove();
             if (result === null) {
                     renderAlertError('Nenhum automóvel encontrado!');
+            }
+            else if(pageNum +1 > totalPagesCount) {
+                location.hash = '/listar/1';
             }
             automoveisCount = result.totalitems ? result.totalitems : 0;
             totalPagesCount = result.totalpages ? result.totalpages : 0;
