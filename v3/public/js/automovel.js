@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 var originalAllAutomoveis = null;
 var activePageName = 'automoveis';
 var allAutomoveis = [];
@@ -7,7 +8,7 @@ var automoveisCount = 0;
 var totalPagesCount = 0;
 var lastPageNumber = 0;
 var lastAlertId = 0;
-var mainContainer = $("#main_container");
+var mainContainer = $('#main_container');
 var componentes = null;
 var autoComponentesIds = null;
 var filtertext = '';
@@ -17,13 +18,13 @@ var tablePanel = $('#table_panel');
 var targetTable = $('#tableContent');
 var checkboxAll = $('#checkbox-select-all');
 
-window.addEventListener("load", _initialize, true);
+window.addEventListener('load', _initialize, true);
 
 function executeRouteCalls(verb) {
     switch(verb) {
-        case 'editar':
-                routeCallEditar(id);
-            break;
+    case 'editar':
+        routeCallEditar(id);
+        break;
     }
 }
 function locationHashChanged() {
@@ -53,7 +54,7 @@ function locationHashChanged() {
 function onClickClearFilter() {
     filtertext = '';
     $('#filtertext').val('');
-    $('#btn-clearfilter').addClass("noshow");
+    $('#btn-clearfilter').addClass('noshow');
     ajaxGetPage();
 }
 function renderPagination() {
@@ -61,30 +62,30 @@ function renderPagination() {
     var maxLinksafter = 99999;
     
     var linkActive = activePageNumber;
-    var template_linksbefore = "";
-    var template_linksafter = "";
+    var template_linksbefore = '';
+    var template_linksafter = '';
     var renderedBefore  = 0;
     var renderedAfter   = 0;
     //calcular quantidade de links antes da página atual ativa:
-        for (var i = linkActive -1; i >= 0 && renderedBefore < maxLinksbefore ; i--) {
-            template_linksbefore = `<li class="page-item"><a class="page-link" onclick="gotoPage(${i})">${i+1}</a></li>` + template_linksbefore;
-            renderedBefore++;
-        }
+    for (var i = linkActive -1; i >= 0 && renderedBefore < maxLinksbefore ; i--) {
+        template_linksbefore = `<li class="page-item"><a class="page-link" onclick="gotoPage(${i})">${i+1}</a></li>` + template_linksbefore;
+        renderedBefore++;
+    }
     //calcular quantidade de links depois da página atual ativa:
-        for (var i = linkActive +1; i < totalPagesCount && renderedAfter < maxLinksafter ; i++) {
-            template_linksafter += `<li class="page-item"><a class="page-link" onclick="gotoPage(${i})">${i+1}</a></li>`;
-            renderedAfter++;
-        }
+    for (var i = linkActive +1; i < totalPagesCount && renderedAfter < maxLinksafter ; i++) {
+        template_linksafter += `<li class="page-item"><a class="page-link" onclick="gotoPage(${i})">${i+1}</a></li>`;
+        renderedAfter++;
+    }
     
-    var template = `    <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                            <li class="page-item ${linkActive -1 >= 0 ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive -1 >= 0 ? (linkActive -1) : 0})">Anterior</a></li>
-                                ${template_linksbefore}
-                            <li class="page-item active"><a class="page-link">${linkActive +1}</a></li>
-                                ${template_linksafter}
-                            <li class="page-item ${linkActive +2 <= totalPagesCount ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive + 1 <= totalPagesCount ? (linkActive + 1) : 0})">Próximo</a></li>
-                            </ul>
-                        </nav>`
+    var template = `<nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                        <li class="page-item ${linkActive -1 >= 0 ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive -1 >= 0 ? (linkActive -1) : 0})">Anterior</a></li>
+                            ${template_linksbefore}
+                        <li class="page-item active"><a class="page-link">${linkActive +1}</a></li>
+                            ${template_linksafter}
+                        <li class="page-item ${linkActive +2 <= totalPagesCount ? '' : 'disabled'}"><a class="page-link" onclick="gotoPage(${linkActive + 1 <= totalPagesCount ? (linkActive + 1) : 0})">Próximo</a></li>
+                        </ul>
+                    </nav>`
     table_paginator.html(template);
 }
 function gotoPage(num) {
@@ -110,9 +111,10 @@ function ajaxGetPage(pageNum = 0, filter = filtertext) {
             allAutomoveis = result.data;
             $('#spinner').remove();
             if (result === null) {
-                    renderAlertError('Nenhum automóvel encontrado!');
+                renderAlertError('Nenhum automóvel encontrado!');
             }
             else if(pageNum +1 > totalPagesCount) {
+                renderAlertError('A página solicitada não existe mais');
                 location.hash = '/listar/1';
             }
             automoveisCount = result.totalitems ? result.totalitems : 0;
@@ -148,8 +150,9 @@ function getCheckedComponentes() {
     var componentes = [];
 
     for (i in elements) {
-        if (elements[i].checked)
-            componentes.push(elements[i].value)
+        if (elements[i].checked) {
+            componentes.push(elements[i].value);
+        }
     }
 
     return componentes;
@@ -176,20 +179,18 @@ function ajaxCreateAutomovel() {
         renderAlertSuccess('Automóvel criado com sucesso!');
         removeEditorForm();
         ajaxGetPage();
-    })
-    .fail(function(error) {
+    }).fail(function(error) {
         err = error.responseJSON;
         if (err === undefined) {
             err.message = 'Erro desconhecido';
             err.code = '666';
         }
-         renderAlertError('Não foi possível executar a operação ['+err.message+' | cód: '+err.code+']');
+        renderAlertError('Não foi possível executar a operação ['+err.message+' | cód: '+err.code+']');
 
-         if (err.formErrors) {
-             updateEditorFormFieldErrors(err.formErrors);
-         }
-    })
-
+        if (err.formErrors) {
+            updateEditorFormFieldErrors(err.formErrors);
+        }
+    });
 }
 function ajaxEditAutomovel(id) {
     resetEditorFormValidation();
@@ -214,17 +215,17 @@ function ajaxEditAutomovel(id) {
         renderAlertSuccess('Automóvel editado com sucesso!');
         removeEditorForm();
         location.hash = '/listar/1';
-    })
-    .fail(function(error) {
+    }).fail(function(error) {
         err = error.responseJSON != undefined ? error.responseJSON : new Object();
         if (err === undefined) {
             err.message = 'Erro desconhecido';
             err.code = '666';
         }
-         renderAlertError('Não foi possível executar a operação ['+err.message+' | cód: '+err.code+']');
-         if (err.formErrors)
-         updateEditorFormFieldErrors(err.formErrors);
-    })
+        renderAlertError('Não foi possível executar a operação ['+err.message+' | cód: '+err.code+']');
+        if (err.formErrors) {
+            updateEditorFormFieldErrors(err.formErrors);
+        }
+    });
 
 }
 function renderTable(itens) {
@@ -238,15 +239,13 @@ function renderTable(itens) {
 }
 function ajaxDeleteManyAutomoveis(comps) {
     var actualPage = activePageNumber;
-    $.post("/v3/automoveis.php", {'action': 'delete_many', 'items': comps}, function (data) {
+    $.post('/v3/automoveis.php', {'action': 'delete_many', 'items': comps}, function (data) {
         renderAlertSuccess(data.message);
-    })
-    .fail(function(error) {
+    }).fail(function(error) {
         renderAlertError('Não foi possível executar a operação ['+error.message+'| cód: '+error.code+']');
-    })
-    .always(function() {
+    }).always(function() {
         ajaxGetPage();
-    })
+    });
 }
 function renderPage(data) {
     toggleTablePanel(true);
@@ -262,8 +261,8 @@ function toggleTablePanel(val) {
 function toggleSelectAll(val) {
     var toggleVal;
     if (val != undefined) {
-     toggleVal = val;
-     checkboxAll.prop('checked', val);
+        toggleVal = val;
+        checkboxAll.prop('checked', val);
     }
     else {
         toggleVal = checkboxAll.prop('checked');
@@ -287,20 +286,19 @@ function renderEditForm(id) {
         toggleTablePanel(false);
         ajaxGetMarcasThenPopulateEditorForm(automovel);
         setFormMasks();
+    }, function(err) {
+        renderAlertError('Não foi possível buscar o automóvel solicitado!');
+        location.hash = '/listar/1';
     });
 }
-function ajaxGetAutomovel(id, callback) {
+function ajaxGetAutomovel(id, callback, errocallback) {
     var automovel;
-    $.get("/v3/automoveis.php?getAutomovel", {'id': id}, function (data) {
+    $.get('/v3/automoveis.php?getAutomovel', {'id': id}, function (data) {
         automovel = data;
         return callback(automovel);
-    })
-    .fail(function(error) {
-        let err = error.responseJSON;
-        renderAlertError(err.message);
-        ajaxGetPage();
-    })
-    
+    }).fail(function(error) {
+        return errocallback(error);
+    });
 }
 function onClickNextPage() {
     if (activePageNumber < lastPageNumber) {
@@ -313,21 +311,21 @@ function onClickPreviousPage() {
     }
 }
 function onClickExcluirVarios() {
-    $('#checkbox-select-all').prop("checked", false);
+    $('#checkbox-select-all').prop('checked', false);
     var selected = [];
     $.each($('.item-checkbox:checked'), function() {
         selected.push($(this).val());
     });
     if (selected.length === 0) {
-        renderAlertError("Selecione algum item para deletar")
+        renderAlertError('Selecione algum item para deletar')
     }
     else {
-        var confirma = confirm("Tem certeza que deseja excluir estes itens?");
+        var confirma = confirm('Tem certeza que deseja excluir estes itens?');
         if (confirma) {
             ajaxDeleteManyAutomoveis(selected);
         } 
         else {
-            renderAlertSuccess("Exclusão cancelada");
+            renderAlertSuccess('Exclusão cancelada');
             $.each($('.item-checkbox:checked'), function() {
                 $(this).prop('checked', false);
             });
@@ -344,9 +342,9 @@ function onClickMenuAdicionar() {
     }
 }
 function renderFormAdicionar() {
-        renderCreateForm();
-        ajaxGetMarcasThenPopulateEditorForm();
-        ajaxGetAllComponentesAndDisplay();
+    renderCreateForm();
+    ajaxGetMarcasThenPopulateEditorForm();
+    ajaxGetAllComponentesAndDisplay();
 }
 function removeEditorForm() {
     $('#editor_form-wrapper').remove();
@@ -402,9 +400,9 @@ function templateGenerateEditorForm(isEditar, data) {
     var id = item && item.id || '';
     var km = item && item.km || '';
 
-    var method = editar ? "ajaxEditAutomovel("+id+")" : "ajaxCreateAutomovel()" ;
-    var verbo = editar ? "Editar" : "Criar";
-    var panelTitle = verbo + " automóvel";
+    var method = editar ? 'ajaxEditAutomovel('+id+')' : 'ajaxCreateAutomovel()' ;
+    var verbo = editar ? 'Editar' : 'Criar';
+    var panelTitle = verbo + ' automóvel';
 
     return `<!-- form -->
     <div id="editor_form-wrapper" class="card">
@@ -517,39 +515,37 @@ function templateGenerateEditorForm(isEditar, data) {
         </form>
                 
     </div>
-    <!-- end form -->`
+    <!-- end form -->`;
 }
 function renderAlertSuccess(msg) {
-    $("body").append(templateAlertSuccess(msg));
-        $("#alert-"+lastAlertId).delay(1500).fadeOut(1500, function(){
-            $(this).remove();
-        });
+    $('body').append(templateAlertSuccess(msg));
+    $('#alert-'+lastAlertId).delay(1500).fadeOut(1500, function(){
+        $(this).remove();
+    });
 }
 function renderAlertError(msg) {
-    $("body").append(templateAlertErro(msg));
-        $("#alert-"+lastAlertId).delay(1500).fadeOut(1500, function(){
-            $(this).remove();
-        });
+    $('body').append(templateAlertErro(msg));
+    $('#alert-'+lastAlertId).delay(1500).fadeOut(1500, function(){
+        $(this).remove();
+    });
 }
 function onClickEditAutomovel(id) {
     location.hash = '/editar/'+id;
     //renderEditForm(id);
 }
 function ajaxDeleteMarca(id) {
-    $.post("/v3/automoveis.php", {'action': 'delete_one', 'id': id}, function (data) {
+    $.post('/v3/automoveis.php', {'action': 'delete_one', 'id': id}, function (data) {
         removeItemFromList(id);
         renderAlertSuccess(data.message);
-    })
-    .fail(function(error) {
+    }).fail(function(error) {
         var err = error.responseJSON;
-        renderAlertError("Não foi possível executar a operação ["+err.message+"| cód: "+err.code+"]");
-    })
-    .always(function() {
+        renderAlertError('Não foi possível executar a operação ['+err.message+'| cód: '+err.code+']');
+    }).always(function() {
         updateReloadTable();
-    })
+    });
 }
 function onClickDeleteAutomovel(id) {
-    var confirma = confirm("Tem certeza que deseja excluir este item?");
+    var confirma = confirm('Tem certeza que deseja excluir este item?');
     if (confirma) ajaxDeleteMarca(id);
 }
 function updateReloadTable() {
@@ -558,7 +554,7 @@ function updateReloadTable() {
 function removeItemFromList(id) {
     allAutomoveis = allAutomoveis.filter(function(item) {
         return item.id != id;
-    })
+    });
 }
 function onClickCreateFormCancelar() {
     var pageNum = parseInt(activePageNumber) +1;
@@ -571,15 +567,14 @@ function updateEditorFormFieldErrors(data) {
     data.forEach(data => renderInvalidFormFeedback(data));
 }
 function templateEditorFormComponentes(compos) {
-    var temp = "";
+    var temp = '';
 
     if (compos.length > 0 ) {
         compos.forEach(comp => {
-
-        temp += `<div class="form-check-inline">
-                        <input type="checkbox" value="${comp.id}" class="form-check-componente" name="${comp.id}" id="checkbox-componente-${comp.id}">
-                        <label for="checkbox-componente-${comp.id}" class="form-check-label">${comp.nome}</label>
-                </div>`;
+            temp += `<div class="form-check-inline">
+                            <input type="checkbox" value="${comp.id}" class="form-check-componente" name="${comp.id}" id="checkbox-componente-${comp.id}">
+                            <label for="checkbox-componente-${comp.id}" class="form-check-label">${comp.nome}</label>
+                    </div>`;
         });
     }
     return temp;
@@ -588,27 +583,27 @@ function templateYearOptions(selected, tipo) {
     var thisYear = new Date().getFullYear();
     var start = 1900;
     var end = thisYear;
-    var options = "";
-        // anos p/ modelo
-        if (tipo == 'modelo') {
-            end = thisYear +1;
-        }
-        for(var i = end; i >= start; i--) {
-            options +=   `<option value="${i}" ${i === selected ? 'selected' : ''}>${i}</option>`;
-        }
+    var options = '';
+    // anos p/ modelo
+    if (tipo == 'modelo') {
+        end = thisYear +1;
+    }
+    for(var i = end; i >= start; i--) {
+        options +=   `<option value="${i}" ${i === selected ? 'selected' : ''}>${i}</option>`;
+    }
     return options;
 }
 function ajaxGetMarcasThenPopulateEditorForm(auto) {
     var item = auto && auto[0] || -1;
     var marcas = [];
     $.ajax({
-        type: "GET",
+        type: 'GET',
         timeout: 5000,
-        contentType: "application/json",
+        contentType: 'application/json',
         cache: false,
-        url: "/v3/marcas.php?all",
+        url: '/v3/marcas.php?all',
         error: function() {
-            alert("Erro ao buscar dados, tente novamente mais tarde!");
+            alert('Erro ao buscar dados, tente novamente mais tarde!');
         },
         success: function(result) {
             marcas = result;
@@ -628,13 +623,13 @@ function ajaxGetMarcasThenPopulateEditorForm(auto) {
 function ajaxGetAllComponentesAndDisplay() {
     componentes = [];
     $.ajax({
-        type: "GET",
+        type: 'GET',
         timeout: 5000,
-        contentType: "application/json",
+        contentType: 'application/json',
         cache: true,
-        url: "/v3/componentes.php?all",
+        url: '/v3/componentes.php?all',
         error: function() {
-            alert("Erro ao buscar dados dos componentes, tente novamente mais tarde!");
+            alert('Erro ao buscar dados dos componentes, tente novamente mais tarde!');
         },
         success: function(result) {
             componentes = result;
@@ -646,13 +641,13 @@ function ajaxGetAllComponentesAndDisplay() {
 }
 function ajaxGetThenPopulateAllComponentes(id) {
     $.ajax({
-        type: "GET",
+        type: 'GET',
         timeout: 5000,
-        contentType: "application/json",
+        contentType: 'application/json',
         cache: true,
-        url: "/v3/componentes.php?all",
+        url: '/v3/componentes.php?all',
         error: function() {
-            alert("Erro ao buscar dados dos componentes, tente novamente mais tarde!");
+            alert('Erro ao buscar dados dos componentes, tente novamente mais tarde!');
         },
         success: function(result) {
             componentes = result;
@@ -661,13 +656,12 @@ function ajaxGetThenPopulateAllComponentes(id) {
     });
 }
 function ajaxGetThenPopulateAutomovelComponentesId(id) {
-    var ids = [];
     $.ajax({
-        type: "GET",
+        type: 'GET',
         timeout: 5000,
-        contentType: "applixation/json",
+        contentType: 'applixation/json',
         cache: false,
-        url: "/v3/automoveis.php?get_componentes&id=" + id,
+        url: '/v3/automoveis.php?get_componentes&id=' + id,
         success: function(result) {
             autoComponentesIds = result;
             populateCrossReferenceAutomovelComponente(autoComponentesIds, componentes);
@@ -675,7 +669,7 @@ function ajaxGetThenPopulateAutomovelComponentesId(id) {
     });
 }
 function populateCrossReferenceAutomovelComponente(auto_componentes, componentes) {
-    var temp = "";
+    var temp = '';
     componentes.forEach(comp => {
         var checked = false;
         if (auto_componentes.find(x => x.id === comp.id)) {

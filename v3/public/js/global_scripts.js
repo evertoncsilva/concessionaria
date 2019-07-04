@@ -1,5 +1,5 @@
 function setActiveLinks(activePageName) {
-    $("#navlink-"+activePageName).addClass("active");
+    $('#navlink-'+activePageName).addClass('active');
 }
 
 $.urlParam = function(name){
@@ -22,5 +22,5 @@ function getValByID(id)
 
 function logout()
 {
-    window.location.href = "http://localhost/v3/login.php?logout";
+    window.location.href = 'http://localhost/v3/login.php?logout';
 }
