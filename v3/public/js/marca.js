@@ -97,7 +97,8 @@ function ajaxDeleteManyMarcas(comps)
         renderAlertSuccess(data.message);
     })
     .fail(function(error) {
-        renderAlertError("Não foi possível executar a operação ["+error.message+"| cód: "+error.code+"]");
+        var err = error.responseJSON;
+        renderAlertError("Não foi possível executar a operação ["+err.message+"| cód: "+err.code+"]");
     })
     .always(function() {
         ajaxGetMarcas('reload');
@@ -159,6 +160,7 @@ function onClickPreviousPage()
 }
 function onClickExcluirVarios()
 {
+    $('#checkbox-select-all').prop("checked", false);
     let selected = [];
     
     $.each($('.item-checkbox:checked'), function() {
@@ -321,7 +323,8 @@ function ajaxDeleteMarca(id)
         renderAlertSuccess(data.message);
     })
     .fail(function(error) {
-        renderAlertError("Não foi possível executar a operação ["+error.message+"| cód: "+error.code+"]");
+        var err = error.responseJSON;
+        renderAlertError("Não foi possível executar a operação ["+err.message+"| cód: "+err.code+"]");
     })
     .always(function() {
         updateReloadTable();

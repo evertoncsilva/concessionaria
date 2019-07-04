@@ -56,17 +56,23 @@ class MarcaController extends Controller {
     }
     public function deleteOne($args) {
         $id = (isset($args['id'])) ? $args['id'] : null;
+        $verifySQL = "SELECT * FROM automovel WHERE marca_id = '{$id}'";
+        $q = $this->DTO->query($verifySQL);
 
-        if ($id != null && is_numeric($id)) {
-            if ($this->DTO->deleteOne($id)) {
-                $this->send(new DefaultSuccesResponse(['msg' => "Deletado item {$id} com sucesso!"]));
+        if ($q) {
+            $this->error(['msg' => 'Existem automóveis relacionados com este componente!', 'error-code' => 3010]);
+        } else {
+            if ($id != null && is_numeric($id)) {
+                if ($this->DTO->deleteOne($id)) {
+                    $this->send(new DefaultSuccesResponse(['msg' => "Deletado item {$id} com sucesso!"]));
+                }
+                else {
+                    $this->error(['msg' => 'Id não localizado', 'error-code' => 2]);
+                }
             }
             else {
-                $this->error(['msg' => "Id não localizado", 'error-code' => 2]);
+                $this->error(['msg'=>'Argumentos inválidos', 'error-code' => 3]);
             }
-        }
-        else {
-            $this->error(['msg'=>"Argumentos inválidos", 'error-code' => 3]);
         }
     }
     public function create($args) {
@@ -96,7 +102,7 @@ class MarcaController extends Controller {
                 return $this->success();
             }
             else {
-                return $this->error(['msg' => "Não foi possível criar nova marca"]);
+                return $this->error(['msg' => 'Não foi possível criar nova marca']);
             }
         }
     }
@@ -132,17 +138,21 @@ class MarcaController extends Controller {
     public function deleteMany($args) {
         if (isset($args['items'])) {
             
-            if ($this->DTO->deleteMany($args['items'])) {
+            $res = $this->DTO->deleteMany($args['items']);
+            if  ($res instanceof DefaultErrorResponse) {
+                $this->error($res);
+            }
+            else if ($res) {
                     $res = ['msg' => 'Deletado  itens com sucesso!'];
                     $this->success($res);
             }
             else {
-                    $res = ['msg' => "Erro ao deletar itens selecionados"];
+                    $res = ['msg' => 'Erro ao deletar itens selecionados'];
                     $this->error($res);
             }
         }
         else {
-            $res = ['msg' => "Requisição inválida"];
+            $res = ['msg' => 'Requisição inválida'];
             $this->error($res);
         }
     }

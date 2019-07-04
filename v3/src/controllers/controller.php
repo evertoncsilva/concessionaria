@@ -40,6 +40,7 @@ class Controller {
             $templateStyles = "login";
             $msg = $msg;
             $success = $isSuccess;
+            http_response_code(401);
             require_once _VIEWS_ROOT.'login/index.php';
             die;
     }

@@ -9,7 +9,7 @@ class ComponenteController extends Controller {
             'paginated' => 'getPaginated',
         ],
         'post' => [
-            'deleteOne' => 'deleteOne',
+            'delete_one' => 'deleteOne',
             'create' => 'create',
             'update' => 'update',
             'delete_many' => 'deleteMany'
@@ -56,30 +56,35 @@ class ComponenteController extends Controller {
     }
     public function deleteOne($args) {
         $id = (isset($args['id'])) ? $args['id'] : null;
+        $verifySQL = "SELECT * FROM automovel_componente WHERE componente_id = '{$id}'";
+        $q = $this->DTO->query($verifySQL);
 
         if ($id != null && is_numeric($id)) {
-            if ($this->DTO->deleteOne($id)) {
+            if($q) {
+                $this->error(['msg' => 'Existem automóveis relacionados com este componente!', 'error-code' => '2010']);
+            }
+            else if ($this->DTO->deleteOne($id)) {
                 $this->send(new DefaultSuccesResponse(['msg' => "Deletado item {$id} com sucesso!"]));
             }
             else {
-                $this->error(['msg' => "Id não localizado", 'error-code' => 2]);
+                $this->error(['msg' => 'Id não localizado', 'error-code' => 2]);
             }
         }
         else {
-            $this->error(['msg'=>"Argumentos inválidos", 'error-code' => 3]);
+            $this->error(['msg'=>'Argumentos inválidos', 'error-code' => 3]);
         }
     }
     public function create($args) {
         if (!isset($args['nome'])) {
 
-            $error = [  'msg' => "Dados inválidos",
+            $error = [  'msg' => 'Dados inválidos',
                         'formErrors' => ['nome' => 'Não pode ser nulo'],
                         'response-code' => 400
             ];
             return $this->error($error);
         }
         elseif (trim($args['nome']) === '') {
-            $error = [  'msg' => "Dados inválidos",
+            $error = [  'msg' => 'Dados inválidos',
                         'formErrors' => ['nome' => 'Campo obrigatório'],
                         'response-code' => 400
             ];
@@ -95,7 +100,7 @@ class ComponenteController extends Controller {
                 return $this->success();
             }
             else {
-                return $this->error(['msg' => "Não foi possível criar novo componente"]);
+                return $this->error(['msg' => 'Não foi possível criar novo componente']);
             }
         }
     }
@@ -108,7 +113,7 @@ class ComponenteController extends Controller {
             ||  trim($args['nome']) === ''
             ||  $args['id'] < 0) {
             $error = [
-                'msg' => "Dados inválidos",
+                'msg' => 'Dados inválidos',
                 'response-code' => 400
             ];
             return $this->error($error);
@@ -131,20 +136,23 @@ class ComponenteController extends Controller {
     }
     public function deleteMany($args) {
         if (isset($args['items'])) {
-            if ($this->DTO->deleteMany($args['items'])) {
-                    $res = ['msg' => "Deletado  itens com sucesso!"];
+            $res = $this->DTO->deleteMany($args['items']);
+            if ($res instanceof DefaultErrorResponse) {
+                $this->error($res);
+            }
+            else if ($res) {
+                    $res = ['msg' => 'Deletado  itens com sucesso!'];
                     $this->success($res);
             }
             else {
-                    $res = ['msg' => "Erro ao deletar itens selecionados"];
+                    $res = ['msg' => 'Erro ao deletar itens selecionados'];
                     $this->error($res);
             }
         }
         else {
-            $res = ['msg' => "Requisição inválida"];
+            $res = ['msg' => 'Requisição inválida'];
             $this->error($res);
         }
-        
     }
 }
 ?>

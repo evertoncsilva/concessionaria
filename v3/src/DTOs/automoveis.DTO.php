@@ -35,8 +35,6 @@ class AutomoveisDTO extends DTO {
                 return $error;
             }
         }
-        $test = $query->rowCount();
-        
         if ($query->rowCount()) {
             return $auto;
         }
@@ -148,7 +146,7 @@ class AutomoveisDTO extends DTO {
         $limit = $itemsPerPage;
         $offset = $pageRequested * $itemsPerPage;
         $orderby = $orderby == null ? 'id' : $orderby;
-        $sql = "SELECT automovel.*, marca.nome AS nome_marca FROM automovel  LEFT JOIN marca  ON marca.id = automovel.marca_id ORDER BY automovel.{$orderby} ASC LIMIT :limit OFFSET :offset";
+        $sql = "SELECT automovel.*, marca.nome AS nome_marca FROM automovel  LEFT JOIN marca  ON marca.id = automovel.marca_id ORDER BY automovel.{$orderby} DESC LIMIT :limit OFFSET :offset";
         if ($filter != null ) {
             $sql =  "SELECT a.*, m.nome AS nome_marca FROM automovel AS a LEFT JOIN marca AS m ON m.id = a.marca_id WHERE a.descricao LIKE '%{$filter}%' OR m.nome LIKE '%{$filter}%' ORDER BY {$orderby} ASC LIMIT :limit OFFSET :offset";
         }
@@ -175,6 +173,30 @@ class AutomoveisDTO extends DTO {
         $data = $this->query($sql);
         $result = $data[0]['count'];
         return $result;
+    }
+    public function deleteOne($id): bool {
+        $sql = "DELETE FROM automovel_componente WHERE automovel_id = '{$id}'";
+        $this->query($sql);
+        $deleteResponse = parent::deleteOne($id);
+        return $deleteResponse();
+    }
+    public function deleteMany($items) {
+        $items = array_filter($items);
+        $ids = implode(",", $items);
+        $sql = "DELETE FROM {$this->tableName} WHERE id IN({$ids})";
+        $sqlComponentes = "DELETE FROM automovel_componente WHERE automovel_id IN({$ids})";
+        $queryComponentes = $this->conn->prepare($sqlComponentes);
+        $query = $this->conn->prepare($sql);
+        $query->execute();
+        $rCount = $query->rowCount();
+        $queryComponentes->execute();
+        
+        if ($query->rowCount()) {
+            return $query;
+        }
+        else {
+            return false;
+        }
     }
 }
 ?>

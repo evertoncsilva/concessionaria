@@ -9,7 +9,7 @@ class AuthDTO extends DTO {
      */
     public function __construct() {
         $modelName = null;
-        $tableName = "usuario";
+        $tableName = 'usuario';
 
         parent::__construct($tableName, $modelName);
     }
@@ -42,7 +42,7 @@ class AuthDTO extends DTO {
 
         //primeiro checar se existe uuário
         if ($this->usuarioExiste($login)) {
-            $msg = "Usuário já existe!";
+            $msg = 'Usuário já existe!';
             return new DefaultErrorResponse(['msg' => $msg]);
         }
         else {
@@ -51,11 +51,11 @@ class AuthDTO extends DTO {
             $result->execute();
 
             if ($result) {
-                $msg = "Usuário criado com sucesso!";
+                $msg = 'Usuário criado com sucesso!';
                 return new DefaultSuccesResponse(['msg' => $msg]);
             }
             else {
-                $msg = "Problema ao cadastrar usuário";
+                $msg = 'Problema ao cadastrar usuário';
                 return new DefaultErrorResponse(['msg' => $msg]);
             }
         }

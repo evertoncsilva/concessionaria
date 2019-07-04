@@ -24,11 +24,11 @@ class AuthController extends Controller {
         if ($loggedIn && isset($_SESSION['user'])) {
             header('Location: automoveis.php', true, 302);
         }
-        parent::renderLogin("É necessário efetuar login!");
+        parent::renderLogin('É necessário efetuar login!');
     }
     public function login($args) {
         if (!isset($args['login']) || !isset($args['senha'])) {
-            parent::renderLogin("Dados para login inválidos!");
+            parent::renderLogin('Dados para login inválidos!');
         }
         $login = $args['login'];
         $senha = $args['senha'];
@@ -41,7 +41,7 @@ class AuthController extends Controller {
             die;
         }
         else {
-            parent::renderLogin("Não foi possível efetuar login, tente novamente!");
+            parent::renderLogin('Não foi possível efetuar login, tente novamente!');
         }
 
     }
@@ -51,10 +51,10 @@ class AuthController extends Controller {
         $confirma = $args['confirma-senha'] ?? null;
 
         if (!$login || !$senha || !$confirma) {
-            parent::renderLogin("Prencha todos os campos para registrar-se");
+            parent::renderLogin('Prencha todos os campos para registrar-se');
         }
         else if ($senha != $confirma) {
-            parent::renderLogin("Confirmação de senha inválida!");
+            parent::renderLogin('Confirmação de senha inválida!');
         }
         else {
             $register = $this->DTO->registrar(['login' => $login, 'senha' => $senha]);
@@ -69,7 +69,7 @@ class AuthController extends Controller {
     }
     public function logout() {
         session_destroy();
-        $this->renderLogin("Você efetuou logout com sucesso!", true);
+        $this->renderLogin('Você efetuou logout com sucesso!', true);
     }
 }
 ?>

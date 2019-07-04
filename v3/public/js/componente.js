@@ -97,7 +97,8 @@ function ajaxDeleteManyComponentes(comps)
         renderAlertSuccess(data.message);
     })
     .fail(function(error) {
-        renderAlertError("Não foi possível executar a operação ["+error.message+"| cód: "+error.code+"]");
+        var err = error.responseJSON;
+        renderAlertError("Não foi possível executar a operação ["+err.message+"| cód: "+err.code+"]");
     })
     .always(function() {
         ajaxGetComponentes('reload');
@@ -159,6 +160,7 @@ function onClickPreviousPage()
 }
 function onClickExcluirVarios()
 {
+    $('#checkbox-select-all').prop("checked", false);
     let selected = [];
     
     $.each($('.item-checkbox:checked'), function() {
@@ -315,14 +317,14 @@ function onClickEditComponente(id)
 {
     renderEditForm(id);
 }
-function ajaxDeleteComponente(id) 
-{
+function ajaxDeleteComponente(id) {
     $.post("/v3/componentes.php", {'action': 'delete_one', 'id': id}, function (data) {
         removeItemFromList(id);
         renderAlertSuccess(data.message);
     })
     .fail(function(error) {
-        renderAlertError("Não foi possível executar a operação ["+error.message+"| cód: "+error.code+"]");
+        var err = error.responseJSON;
+        renderAlertError("Não foi possível executar a operação ["+err.message+"| cód: "+err.code+"]");
     })
     .always(function() {
         reloadTable();

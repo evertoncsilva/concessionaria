@@ -1,2 +1,3 @@
 1010 -> Erro na validação do automóvel
 1012 -> Registro duplicado na inserção do automóvel no banco
+2010 -> tentatica de deletar componente com automóvel relacionado

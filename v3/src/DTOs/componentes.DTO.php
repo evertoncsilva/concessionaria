@@ -38,5 +38,28 @@ class ComponentesDTO extends DTO {
             return false;
         }
     }
+    public function deleteMany($items) {
+        $items = array_filter($items);
+        $ids = implode(",", $items);
+        $sqlAutoRelacionados = "SELECT * FROM automovel_componente WHERE componente_id IN ({$ids})";
+        $verifyQuery = $this->query($sqlAutoRelacionados);
+
+        if ($verifyQuery) { // existe algum relacionado
+            return new DefaultErrorResponse(['msg' => 'Existem automóveis relacionados a algum destes componentes!', 'error-code' => 2010]);
+        } else {
+            $sql = "DELETE FROM {$this->tableName} WHERE id IN({$ids})";
+            $query = $this->conn->prepare($sql);
+            $query->execute();
+            $rCount = $query->rowCount();
+            
+            if ($query->rowCount()) {
+                return $query;
+            }
+            else {
+                return false;
+            }
+        }
+        
+    }
 }
 ?>

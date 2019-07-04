@@ -3,4 +3,3 @@
     define("TEMPLATE_FOLDER", __DIR__.'/../templates/');
     define("_ROOT_FOLDER", __DIR__.'/../');
     define("_VIEWS_ROOT", __DIR__.'/../src/views/');
-?>

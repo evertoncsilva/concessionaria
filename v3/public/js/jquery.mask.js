@@ -567,7 +567,6 @@
         var $selector = (selector instanceof $) ? selector : $(selector);
         $selector.filter($.jMaskGlobals.dataMaskAttr).each(HTMLAttributes);
     };
-
     var globals = {
         maskElements: 'input,td,span,div',
         dataMaskAttr: '*[data-mask]',

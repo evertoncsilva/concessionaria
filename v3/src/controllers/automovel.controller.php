@@ -10,7 +10,9 @@ class AutomovelController extends Controller {
             'getpage' => 'getpage',
             'all' => 'getAll',
             'relatorio' => 'relatorioForm',
-            'gerarelatorio' => 'geraRelatorio'
+            'gerarelatorio' => 'geraRelatorio',
+            'getAutomovel' => 'getAutomovel',
+            'edit' => 'renderIndex'
         ],
         'post' => [
             'delete_many' => 'deleteMany',
@@ -22,7 +24,7 @@ class AutomovelController extends Controller {
     public function __construct() {
         $dto = new AutomoveisDTO();
         parent::__construct('automovel', $dto);
-        $this->pageTitle = "Automóveis";
+        $this->pageTitle = 'Automóveis';
         $this->requireAuth = true;
     }
     public function getAll($args) {
@@ -70,11 +72,11 @@ class AutomovelController extends Controller {
                 $this->send(new DefaultSuccesResponse(['msg' => "Deletado item {$id} com sucesso!"]));
             }
             else {
-                $this->error(['msg' => "Id não localizado", 'error-code' => 2]);
+                $this->error(['msg' => 'Id não localizado', 'error-code' => 2]);
             }
         }
         else {
-            $this->error(['msg'=>"Argumentos inválidos", 'error-code' => 3]);
+            $this->error(['msg'=>'Argumentos inválidos', 'error-code' => 3]);
         }
     }
     public function create($args) {
@@ -83,7 +85,7 @@ class AutomovelController extends Controller {
                         return $this->error($result);
                 }
                 else if ($result === false) {
-                        return $this->error(['msg' => "Não foi possível criar novo automóvel"]);
+                        return $this->error(['msg' => 'Não foi possível criar novo automóvel']);
                 }
                 else if($result instanceof Automovel) {
                         $componentes = $args['componentes_ids'] ?? array();
@@ -92,7 +94,7 @@ class AutomovelController extends Controller {
                                 $this->DTO->compareAndUpdateComponentes($newlyCreated->id, $componentes);
                         }
 
-                        return $this->success(['msg' => "Automovel criado com sucesso"]);
+                        return $this->success(['msg' => 'Automovel criado com sucesso']);
                 }
     }
     public function update($args) {
@@ -103,24 +105,24 @@ class AutomovelController extends Controller {
             }
 
             else if($result === false) {
-                    return $this->error(['msg' => "Não foi possível atualizar automóvel"]);
+                    return $this->error(['msg' => 'Não foi possível atualizar automóvel']);
             }
             else if($result === true) {
                     $componentes = $args['componentes_ids'] ?? array();
 
                     $this->DTO->compareAndUpdateComponentes($args['id'], $componentes);
-                    return $this->success(['msg' => "Editado com sucesso!"]);
+                    return $this->success(['msg' => 'Editado com sucesso!']);
             }
     }
     public function deleteMany($args) {
         if (isset($args['items'])) {
             
             if ($this->DTO->deleteMany($args['items'])) {
-                    $res = ['msg' => "Deletado  itens com sucesso!"];
+                    $res = ['msg' => 'Deletado  itens com sucesso!'];
                     $this->success($res);
             }
             else {
-                    $res = ['msg' => "Erro ao deletar itens selecionados"];
+                    $res = ['msg' => 'Erro ao deletar itens selecionados'];
                     $this->error($res);
             }
         }
@@ -146,7 +148,7 @@ class AutomovelController extends Controller {
     public function getpage($args) {
         $page = $args['page'] ?? 0;
         $itensPerPage = $args['itemsperpage'] ?? 3;
-        $orderby = $args['orderby'] ?? 'id';
+        $orderby = $args['orderby'] ?? 'data_add';
         $filter = $args['filter'] ?? null;
         $data = $this->DTO->getPage($page, $itensPerPage, $orderby, $filter);
         $this->send($data);
@@ -181,7 +183,7 @@ class AutomovelController extends Controller {
         
         $sql = "SELECT a.*, m.nome AS nome_marca FROM automovel AS a JOIN marca AS m ON m.id = a.marca_id WHERE {$filterby} LIKE :filter ORDER BY {$orderby} {$order}; ";
         $stmt = $this->DTO->conn->prepare($sql);
-        $stmt->bindValue(':filter', "%".$filtro."%");
+        $stmt->bindValue(':filter', '%'.$filtro.'%');
         $stmt->execute();
 
         $queryResult = $stmt->fetchAll();
@@ -212,8 +214,6 @@ class AutomovelController extends Controller {
     }
     private function relatorioValidaOrder($order = 'asc') {
         switch($order) {
-            case 'asc':
-                return 'asc';
             case 'desc':
                 return 'desc';
             default:
@@ -222,8 +222,6 @@ class AutomovelController extends Controller {
     }
     private function relatorioValidaFilterby($filterby = 'descricao') {
         switch($filterby) {
-            case 'descricao':
-                return 'a.descricao';
             case 'nome_marca':
                 return 'm.nome';
             default:
@@ -232,6 +230,22 @@ class AutomovelController extends Controller {
     }
     private function relatorioValidaFilterbyValue($filtro = '') {
         return $filtro;
+    }
+    public function getAutomovel($args) {
+        $errMsg = 'Não foi possível localizar o id solicitado!';
+        $id = $args['id'] ?? null;
+        if ($id == null) {
+            $this->error($errMsg);
+        }
+        else {
+            $result = $this->DTO->getById($id);
+            if ($result == null) {
+                $this->error($errMsg);
+            }
+            else {
+                $this->send($result);
+            }
+        }
     }
 }
 ?>

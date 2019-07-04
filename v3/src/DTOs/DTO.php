@@ -129,7 +129,7 @@ abstract class DTO extends DatabaseConnector {
             return null;
         }
     }
-    public function getById($id): Model {
+    public function getById($id) {
         $sql = "SELECT * FROM {$this->tableName} WHERE id = {$id}";
         $data = $this->query($sql);
         if ($data)  {
