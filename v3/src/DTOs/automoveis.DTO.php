@@ -30,7 +30,7 @@ class AutomoveisDTO extends DTO {
             $errorInfo = $query->errorInfo();
             if ($errorInfo[1] == 1062) {
                 $err = ['msg' => 'Não é permitido registros duplicados!',
-                        'code' => 1012];
+                    'code' => 1012];
                 $error = new DefaultErrorResponse($err);
                 return $error;
             }
@@ -85,13 +85,13 @@ class AutomoveisDTO extends DTO {
     }
     public function compareAndUpdateComponentes($auto_id, $componentes) {
         if ($componentes === null) {
-                // caso não haja compoentes marcados assegura de que 
-                // serão deletadas todas as referências
-                $sql = "DELETE FROM automovel_componente WHERE automovel_id = {$auto_id}";
-                $query  = $this->conn->prepare($sql);
-                $query->execute();
-                return;
-            }
+            // caso não haja compoentes marcados assegura de que 
+            // serão deletadas todas as referências
+            $sql = "DELETE FROM automovel_componente WHERE automovel_id = {$auto_id}";
+            $query  = $this->conn->prepare($sql);
+            $query->execute();
+            return;
+        }
         //componentes que já estão neste
         $sql = "SELECT c.id FROM componente AS c LEFT JOIN automovel_componente AS ac ON ac.componente_id = c.id WHERE ac.automovel_id = {$auto_id}; "; 
         $query  = $this->conn->prepare($sql);
@@ -102,17 +102,17 @@ class AutomoveisDTO extends DTO {
         $to_remove  = array();
 
         //comparação do que adicionar (o que não está na arrau das esistentes mas está na $componentes)
-            foreach ($componentes as $key => $id) {
-                if (!in_array($id, $existingComponentes)) {
-                    array_push($to_add, $id);
-                }
+        foreach ($componentes as $key => $id) {
+            if (!in_array($id, $existingComponentes)) {
+                array_push($to_add, $id);
             }
+        }
         //comparação do que remover (está na $existingComponentes mas não na $componentes)
-            foreach ($existingComponentes as $key => $id) {
-                if (!in_array($id, $componentes)) {
-                    array_push($to_remove, $id);
-                }
+        foreach ($existingComponentes as $key => $id) {
+            if (!in_array($id, $componentes)) {
+                array_push($to_remove, $id);
             }
+        }
         // adicionar
         foreach ($to_add as $key => $id) {
             $sql_add = "INSERT INTO automovel_componente (automovel_id, componente_id) VALUES({$auto_id}, {$id})";
@@ -190,7 +190,6 @@ class AutomoveisDTO extends DTO {
         $query->execute();
         $rCount = $query->rowCount();
         $queryComponentes->execute();
-        
         if ($query->rowCount()) {
             return $query;
         }

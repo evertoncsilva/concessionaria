@@ -32,15 +32,15 @@ function locationHashChanged() {
     var hash = window.location.hash.split('/');
     // processar caminhos por hash
 
-    if(hash[1] === 'editar' && !isNaN(hash[2])) {
+    if (hash[1] === 'editar' && !isNaN(hash[2])) {
         var id = parseInt(hash[2]);
         renderEditForm(id);
     }
-    else if(hash[1] === 'listar' && !isNaN(hash[2])) {
+    else if (hash[1] === 'listar' && !isNaN(hash[2])) {
         var pageNum = parseInt(hash[2]) -1;
         ajaxGetPage(pageNum);
     }
-    else if(hash[1] === 'adicionar') {
+    else if (hash[1] === 'adicionar') {
         renderFormAdicionar();
     }
     else {
@@ -106,7 +106,7 @@ function ajaxGetPage(pageNum = 0, filter = filtertext) {
             automoveisCount = parseInt(result.totalitems);
             allAutomoveis = result.data;
             $('#spinner').remove();
-            if(result === null) {
+            if (result === null) {
                     renderAlertError('Nenhum automóvel encontrado!');
             }
             automoveisCount = result.totalitems ? result.totalitems : 0;
@@ -118,11 +118,9 @@ function ajaxGetPage(pageNum = 0, filter = filtertext) {
 function _initialize() {
     locationHashChanged();
     setActiveLinks(activePageName);
-    
-
     $('#filtertext').on('keyup', function() {
         filtertext = this.value;
-        if(this.value != '') {
+        if (this.value != '') {
             $('#btn-clearfilter').removeClass("noshow");
         }
         else {
@@ -131,14 +129,12 @@ function _initialize() {
         }
     });
     $('#filtertext').on('keypress', function(e) {
-        if(e.which == 13) {
-            if($('#filtertext').val != '') {
+        if (e.which == 13) {
+            if ($('#filtertext').val != '') {
                 ajaxGetPage();
             }
         }
     });
-
-   
     window.addEventListener("hashchange", locationHashChanged, true);
 }
 function getCheckedComponentes() {
@@ -146,7 +142,7 @@ function getCheckedComponentes() {
     var componentes = [];
 
     for (i in elements) {
-        if(elements[i].checked)
+        if (elements[i].checked)
             componentes.push(elements[i].value)
     }
 
@@ -169,7 +165,6 @@ function ajaxCreateAutomovel() {
         preco: getValByID('editor_form-preco'),
         preco_fipe: getValByID('editor_form-preco_fipe'),
         componentes_ids: componentes
-
     }
     $.post('/v3/automoveis.php', data, function (result) {
         renderAlertSuccess('Automóvel criado com sucesso!');
@@ -178,7 +173,7 @@ function ajaxCreateAutomovel() {
     })
     .fail(function(error) {
         err = error.responseJSON;
-        if(err === undefined) {
+        if (err === undefined) {
             err.message = 'Erro desconhecido';
             err.code = '666';
         }
@@ -216,12 +211,12 @@ function ajaxEditAutomovel(id) {
     })
     .fail(function(error) {
         err = error.responseJSON != undefined ? error.responseJSON : new Object();
-        if(err === undefined) {
+        if (err === undefined) {
             err.message = 'Erro desconhecido';
             err.code = '666';
         }
          renderAlertError('Não foi possível executar a operação ['+err.message+' | cód: '+err.code+']');
-         if(err.formErrors)
+         if (err.formErrors)
          updateEditorFormFieldErrors(err.formErrors);
     })
 
@@ -270,7 +265,7 @@ function toggleSelectAll(val) {
     $('.item-checkbox').prop('checked', toggleVal);
 }
 function renderCreateForm() {
-    if($('#editor_form-wrapper').length) return;
+    if ($('#editor_form-wrapper').length) return;
     toggleTablePanel(false);
     mainContainer.append(templateGenerateEditorForm());
     setFormMasks();
@@ -302,12 +297,12 @@ function ajaxGetAutomovel(id, callback) {
     
 }
 function onClickNextPage() {
-    if(activePageNumber < lastPageNumber) {
+    if (activePageNumber < lastPageNumber) {
         renderPage(activePageNumber + 1, );
     }
 }
 function onClickPreviousPage() {
-    if(activePageNumber > 0) {
+    if (activePageNumber > 0) {
         renderPage(activePageNumber -1);
     }
 }
@@ -336,7 +331,7 @@ function onClickExcluirVarios() {
 function onClickMenuAdicionar() {
     var hash = window.location.hash.split('/');
     if (hash[1] === 'adicionar') {
-        return
+        return;
     }
     else {
         location.hash = '/adicionar';
@@ -549,7 +544,7 @@ function ajaxDeleteMarca(id) {
 }
 function onClickDeleteAutomovel(id) {
     var confirma = confirm("Tem certeza que deseja excluir este item?");
-    if(confirma) ajaxDeleteMarca(id);
+    if (confirma) ajaxDeleteMarca(id);
 }
 function updateReloadTable() {
     ajaxGetPage(activePageNumber);
@@ -589,7 +584,7 @@ function templateYearOptions(selected, tipo) {
     var end = thisYear;
     var options = "";
         // anos p/ modelo
-        if(tipo == 'modelo') {
+        if (tipo == 'modelo') {
             end = thisYear +1;
         }
         for(var i = end; i >= start; i--) {
@@ -613,7 +608,7 @@ function ajaxGetMarcasThenPopulateEditorForm(auto) {
             marcas = result;
             marcas.sort((a, b) => { 
                 if (a.nome < b.nome) return -1;
-                else if(a.nome > b.nome) return 1;
+                else if (a.nome > b.nome) return 1;
                 else return 0;
             });
             marcas.forEach(marca => {

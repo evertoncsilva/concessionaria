@@ -33,7 +33,7 @@
 
 <?php
 // MENSAGEM DE ERRO
-if(isset($msg) && $success == false)
+if (isset($msg) && $success == false)
 { ?>
 <script>
 
@@ -53,7 +53,7 @@ function templateAlertErro(message)
 
 <?php
 // MENSAGEM DE SUCESSO
-if(isset($msg) && $success == true)
+if (isset($msg) && $success == true)
 { ?>
 <script>
 

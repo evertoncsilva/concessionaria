@@ -62,7 +62,7 @@ class Automovel extends Model {
         $instance->validaPreco($args['preco'], $errors);
         $instance->validaPrecoFipe($args['preco_fipe'], $errors);
         
-        if($instance->isValid()) {
+        if ($instance->isValid()) {
             return $instance;
         }
         else {
@@ -71,16 +71,16 @@ class Automovel extends Model {
     }
     public function validaDescricao($descricao, &$errors) {
         if (!isset($descricao) || $descricao === null) {
-                $this->validationStatus = false;
-                return $errors->addFormError(['campo' => 'descricao', 'msg' => 'Não pode ser vazio']);
+            $this->validationStatus = false;
+            return $errors->addFormError(['campo' => 'descricao', 'msg' => 'Não pode ser vazio']);
         }
         if (strlen($descricao) > 60) {
-                $this->validationStatus = false;
-                return $errors->addFormError(['campo' => 'descricao', 'msg' => 'Tamanho máximo 60 caracteres']);
+            $this->validationStatus = false;
+            return $errors->addFormError(['campo' => 'descricao', 'msg' => 'Tamanho máximo 60 caracteres']);
         }
         if (strlen($descricao) < 8) {
-                $this->validationStatus = false;
-                return $errors->addFormError(['campo' => 'descricao', 'msg' => 'Pelo menos 8 caracteres']);
+            $this->validationStatus = false;
+            return $errors->addFormError(['campo' => 'descricao', 'msg' => 'Pelo menos 8 caracteres']);
         }
     }
     public function validaPlaca($placa, &$errors) {
@@ -127,11 +127,7 @@ class Automovel extends Model {
             $this->validationStatus = false;
             return $errors->addFormError(['campo'=> 'ano_modelo', 'msg' => 'Apenas números']);
         }
-        if ($ano > date('Y') +1) {
-            $this->validationStatus = false;
-            return $errors->addFormError(['campo'=> 'ano_modelo', 'msg' => 'Ano inválido!']);
-        }
-        if ($ano < 1900) {
+        if ($ano > date('Y') +1 || $ano < 1900) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo'=> 'ano_modelo', 'msg' => 'Ano inválido!']);
         }
@@ -147,7 +143,7 @@ class Automovel extends Model {
     public function validaAnoFabricacao($ano, &$errors) {
         if ($ano === null) {
             $this->validationStatus = false;
-            return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Ano do modelo é obrigatório!']);
+            return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Ano de fabricação é obrigatório!']);
         }
         if ($this->ano_modelo === null) {
             $this->validationStatus = false;
@@ -157,11 +153,7 @@ class Automovel extends Model {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Apenas números!']);
         }
-        if ($ano > date('Y')) {
-            $this->validationStatus = false;
-            return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Ano inválido!']);
-        }
-        if ($ano < 1900) {
+        if ($ano > date('Y') || $ano < 1900) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'ano_fabricacao', 'msg' => 'Ano inválido!']);
         }
@@ -171,7 +163,7 @@ class Automovel extends Model {
         }
     }
     public function validaCor($cor, &$errors) {
-        if(strlen($cor) > 20) {
+        if (strlen($cor) > 20) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'cor', 'msg' => 'Máximo de 20 caracteres!']);
         }
@@ -179,7 +171,7 @@ class Automovel extends Model {
     public function validaKm($km, &$errors) {
         $km = str_replace('.','', $km);
             $this->km = $km;
-        if($km < 0) {
+        if ($km < 0) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'km', 'msg' => 'Km menor que zero!']);
         }
@@ -227,7 +219,7 @@ class Automovel extends Model {
         $preco = str_replace('.','', $preco);
         $preco = str_replace(',','.', $preco);  // substitui virgulas por pontos
         $this->preco_fipe = $preco;
-        if(!is_numeric($preco)) {
+        if (!is_numeric($preco)) {
             $this->validationStatus = false;
             return $errors->addFormError(['campo' => 'preco_fipe', 'msg' => 'Apenas números!']);
         }

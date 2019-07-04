@@ -60,7 +60,7 @@ class ComponenteController extends Controller {
         $q = $this->DTO->query($verifySQL);
 
         if ($id != null && is_numeric($id)) {
-            if($q) {
+            if ($q) {
                 $this->error(['msg' => 'Existem automóveis relacionados com este componente!', 'error-code' => '2010']);
             }
             else if ($this->DTO->deleteOne($id)) {
@@ -96,7 +96,7 @@ class ComponenteController extends Controller {
 
             $createArgs = array('nome' => $nome, 'descricao' => $descricao);
             
-            if($this->DTO->create($args)) {
+            if ($this->DTO->create($args)) {
                 return $this->success();
             }
             else {
@@ -107,11 +107,7 @@ class ComponenteController extends Controller {
     public function update($args) {
         //TODO: validação de update
         $args = $args;
-        if(     !isset($args['id']) 
-            ||  !isset($args['nome'])
-            ||  trim($args['id']) === '' 
-            ||  trim($args['nome']) === ''
-            ||  $args['id'] < 0) {
+        if (!isset($args['id']) || !isset($args['nome']) || trim($args['id']) === '' ||  trim($args['nome']) === '' ||  $args['id'] < 0) {
             $error = [
                 'msg' => 'Dados inválidos',
                 'response-code' => 400
@@ -130,7 +126,6 @@ class ComponenteController extends Controller {
                 'msg' => 'Componente atualizado com sucesso!',
                 'info' => $updated
             ];
-
             $this->success($res);
         }
     }
@@ -141,12 +136,12 @@ class ComponenteController extends Controller {
                 $this->error($res);
             }
             else if ($res) {
-                    $res = ['msg' => 'Deletado  itens com sucesso!'];
-                    $this->success($res);
+                $res = ['msg' => 'Deletado  itens com sucesso!'];
+                $this->success($res);
             }
             else {
-                    $res = ['msg' => 'Erro ao deletar itens selecionados'];
-                    $this->error($res);
+                $res = ['msg' => 'Erro ao deletar itens selecionados'];
+                $this->error($res);
             }
         }
         else {

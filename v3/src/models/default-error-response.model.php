@@ -12,14 +12,14 @@ class DefaultErrorResponse {
             $this->code = (isset($args['error-code'])) ? $args['error-code'] : 1;
             $this->code = $args['code'] ?? 1;
 
-            if(isset($args['info'])) { 
+            if (isset($args['info'])) { 
                 $this->info = $args['info']; 
             }
-            if(isset($args['formErrors'])) { 
+            if (isset($args['formErrors'])) { 
                 $this->formErrors = $args['formErrors']; 
             }
         }
-        else if($pdo != null) {
+        else if ($pdo != null) {
             $this->errorFromPDOStatement($pdo);
         }
         else {

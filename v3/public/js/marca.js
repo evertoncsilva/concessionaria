@@ -40,10 +40,10 @@ function ajaxGetMarcas(page)
             totalPagesCount = Math.ceil(marcasCount / pageSize);
             lastPageNumber = (totalPagesCount > 1) ? (totalPagesCount -1) : 0;
             try {
-                if(page === 'last') {
+                if (page === 'last') {
                     renderPage(lastPageNumber);
                 }
-                else if(page === 'reload') {
+                else if (page === 'reload') {
                     renderPage(activePageNumber);
                 }
                 else {
@@ -73,12 +73,12 @@ function ajaxEditMarca(id)
     })
     .fail(function(error) {
         err = error.responseJSON;
-        if(err === undefined) {
+        if (err === undefined) {
             err.message = "Erro desconhecido";
             err.code = "666";
         }
          renderAlertError("Não foi possível executar a operação ["+err.message+" | cód: "+err.code+"]");
-         if(err.formErrors)
+         if (err.formErrors)
          updateEditorFormFieldErrors(err.formErrors);
     })
 
@@ -124,7 +124,7 @@ function toggleTablePanel(val)
 function toggleSelectAll(val)
 {
     let toggleVal;
-    if(val != undefined){
+    if (val != undefined){
      toggleVal = val;
      checkboxAll.prop('checked', val);
     }
@@ -135,7 +135,7 @@ function toggleSelectAll(val)
 }
 function renderCreateForm()
 {
-    if($('#editor_form-wrapper').length) return;
+    if ($('#editor_form-wrapper').length) return;
     toggleTablePanel(false);
     mainContainer.append(templateGenerateEditorForm());
 }
@@ -147,13 +147,13 @@ function renderEditForm(id)
 }
 function onClickNextPage()
 {
-    if(activePageNumber < lastPageNumber) {
+    if (activePageNumber < lastPageNumber) {
         renderPage(activePageNumber + 1, );
     }
 }
 function onClickPreviousPage()
 {
-    if(activePageNumber > 0)
+    if (activePageNumber > 0)
     {
         renderPage(activePageNumber -1);
     }
@@ -167,7 +167,7 @@ function onClickExcluirVarios()
         selected.push($(this).val());
     });
     
-    if(selected.length === 0)
+    if (selected.length === 0)
         {
             renderAlertError("Selecione algum item para deletar")
         }
@@ -191,13 +191,13 @@ function ajaxCreateMarca()
     })
     .fail(function(error) {
         err = error.responseJSON;
-        if(err === undefined) {
+        if (err === undefined) {
             err.message = "Erro desconhecido";
             err.code = "666";
         }
          renderAlertError("Não foi possível executar a operação ["+err.message+" | cód: "+err.code+"]");
 
-         if(err.formErrors)
+         if (err.formErrors)
          updateEditorFormFieldErrors(err.formErrors);
     })
 }
@@ -211,10 +211,10 @@ function removeEditorForm()
 }
 function updatePageButtoms()
 {
-    if(activePageNumber < 1) {previousButtom.toggleClass('disabled', true);}
+    if (activePageNumber < 1) {previousButtom.toggleClass('disabled', true);}
     else {previousButtom.toggleClass('disabled', false);}
 
-    if(activePageNumber < lastPageNumber) {nextButtom.toggleClass('disabled', false);}
+    if (activePageNumber < lastPageNumber) {nextButtom.toggleClass('disabled', false);}
     else {nextButtom.toggleClass('disabled', true);}
 }
 function templateGenerateTableItem(item) 
@@ -351,8 +351,8 @@ function onClickCreateFormCancelar()
 }
 function updateEditorFormFieldErrors(data)
 {
-    if(data === undefined || data === null) return;
-    if(data.nome)
+    if (data === undefined || data === null) return;
+    if (data.nome)
     {
 
     }

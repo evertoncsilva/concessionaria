@@ -50,7 +50,7 @@ class AutomovelController extends Controller {
         if (isset($args['order-by']) && $this->DTO->isColumnNameValid($args['order-by'])) {
             $orderBy = $args['order-by'];
         }
-        if(isset($args['action']) && $args['action'] == 'previous') {
+        if (isset($args['action']) && $args['action'] == 'previous') {
             $action = 'previous'; 
         }
 
@@ -68,7 +68,7 @@ class AutomovelController extends Controller {
         $id = (isset($args['id'])) ? $args['id'] : null;
 
         if ($id != null && is_numeric($id)) {
-            if($this->DTO->deleteOne($id)) {
+            if ($this->DTO->deleteOne($id)) {
                 $this->send(new DefaultSuccesResponse(['msg' => "Deletado item {$id} com sucesso!"]));
             }
             else {
@@ -82,48 +82,47 @@ class AutomovelController extends Controller {
     public function create($args) {
                 $result = $this->DTO->create($args);
                 if ($result instanceof DefaultErrorResponse) {
-                        return $this->error($result);
+                    return $this->error($result);
                 }
                 else if ($result === false) {
-                        return $this->error(['msg' => 'Não foi possível criar novo automóvel']);
+                    return $this->error(['msg' => 'Não foi possível criar novo automóvel']);
                 }
-                else if($result instanceof Automovel) {
-                        $componentes = $args['componentes_ids'] ?? array();
-                        if (is_array($componentes) && !empty($componentes)) {   //se há componentes a serem adicionados
-                                $newlyCreated = $this->DTO->getByPlaca($result->placa);
-                                $this->DTO->compareAndUpdateComponentes($newlyCreated->id, $componentes);
-                        }
+                else if ($result instanceof Automovel) {
+                    $componentes = $args['componentes_ids'] ?? array();
+                    if (is_array($componentes) && !empty($componentes)) {   //se há componentes a serem adicionados
+                        $newlyCreated = $this->DTO->getByPlaca($result->placa);
+                        $this->DTO->compareAndUpdateComponentes($newlyCreated->id, $componentes);
+                    }
 
-                        return $this->success(['msg' => 'Automovel criado com sucesso']);
+                    return $this->success(['msg' => 'Automovel criado com sucesso']);
                 }
     }
     public function update($args) {
             $result = $this->DTO->update($args);
 
             if ($result instanceof DefaultErrorResponse) {
-                    return $this->error($result);
+                return $this->error($result);
             }
-
-            else if($result === false) {
-                    return $this->error(['msg' => 'Não foi possível atualizar automóvel']);
+            else if ($result === false) {
+                return $this->error(['msg' => 'Não foi possível atualizar automóvel']);
             }
-            else if($result === true) {
-                    $componentes = $args['componentes_ids'] ?? array();
+            else if ($result === true) {
+                $componentes = $args['componentes_ids'] ?? array();
 
-                    $this->DTO->compareAndUpdateComponentes($args['id'], $componentes);
-                    return $this->success(['msg' => 'Editado com sucesso!']);
+                $this->DTO->compareAndUpdateComponentes($args['id'], $componentes);
+                return $this->success(['msg' => 'Editado com sucesso!']);
             }
     }
     public function deleteMany($args) {
         if (isset($args['items'])) {
             
             if ($this->DTO->deleteMany($args['items'])) {
-                    $res = ['msg' => 'Deletado  itens com sucesso!'];
-                    $this->success($res);
+                $res = ['msg' => 'Deletado  itens com sucesso!'];
+                $this->success($res);
             }
             else {
-                    $res = ['msg' => 'Erro ao deletar itens selecionados'];
-                    $this->error($res);
+                $res = ['msg' => 'Erro ao deletar itens selecionados'];
+                $this->error($res);
             }
         }
         else {
@@ -133,17 +132,16 @@ class AutomovelController extends Controller {
         
     }
     public function getComponentes($args) {
-            $automovel_id = $args['id'] ?? null;
+        $automovel_id = $args['id'] ?? null;
 
-            if ($automovel_id == null) {
-                $err  = ['msg' => 'Argumentos inválidos'];
-                $this->error($err);
-            }
-            else {
-                $res = $this->DTO->getComponentes($automovel_id);
-                $this->send($res);
-            }
-
+        if ($automovel_id == null) {
+            $err  = ['msg' => 'Argumentos inválidos'];
+            $this->error($err);
+        }
+        else {
+            $res = $this->DTO->getComponentes($automovel_id);
+            $this->send($res);
+        }
     }
     public function getpage($args) {
         $page = $args['page'] ?? 0;
